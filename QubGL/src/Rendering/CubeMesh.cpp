@@ -4,7 +4,8 @@
 #include "VertexArrayObject.hpp"
 #include "VertexBufferObject.hpp"
 
-CubeMesh::CubeMesh(std::vector<Vertex>* vertices, std::vector<unsigned int>* indices) {
+CubeMesh::CubeMesh(std::vector<Vertex>* vertices, std::vector<unsigned int>* indices)
+	:m_ebo(nullptr), m_vao(nullptr), m_vbo(nullptr) {
 	if (!m_isLoaded) {
 		Load(vertices, indices);
 	}
@@ -22,6 +23,10 @@ void CubeMesh::Draw() const {
 	glDrawElements(GL_TRIANGLES, m_ebo->GetIndicesCount(), GL_UNSIGNED_INT, (void*)0);
 
 	Unbind();
+}
+
+std::string CubeMesh::GetName() const {
+	return m_name;
 }
 
 void CubeMesh::Load(std::vector<Vertex>* vertices, std::vector<unsigned int>* indices) {
@@ -44,6 +49,10 @@ void CubeMesh::Load(std::vector<Vertex>* vertices, std::vector<unsigned int>* in
 	m_vao->Unbind();
 
 	m_isLoaded = true;
+}
+
+void CubeMesh::SetName(std::string name) {
+	m_name = name;
 }
 
 void CubeMesh::Unbind() const {

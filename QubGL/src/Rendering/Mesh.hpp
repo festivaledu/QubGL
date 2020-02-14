@@ -17,6 +17,6 @@ public:
 	}
 
 protected:
-	std::string m_name;
-	class VertexArrayObject* m_vao;
+	std::string m_name = "unnamed";
+	class VertexArrayObject* m_vao = nullptr;
 };

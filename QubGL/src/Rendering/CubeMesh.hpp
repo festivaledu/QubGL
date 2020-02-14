@@ -1,19 +1,20 @@
 #pragma once
 
+#include <string>
 #include <vector>
 
-#include "Mesh.hpp"
+struct Vertex;
 
-class Vertex;
-
-class CubeMesh : public Mesh {
+class CubeMesh {
 public:
-	CubeMesh(): m_ebo(nullptr), m_vbo(nullptr) { }
+	CubeMesh(): m_ebo(nullptr), m_vao(nullptr), m_vbo(nullptr) { }
 	CubeMesh(std::vector<Vertex>* vertices, std::vector<unsigned int>* indices);
 
-	virtual void Bind() const override;
-	virtual void Draw() const override;
-	virtual void Unbind() const override;
+	void Bind() const;
+	void Draw() const;
+	std::string GetName() const;
+	void SetName(std::string name);
+	void Unbind() const;
 
 private:
 	void Load(std::vector<Vertex>* vertices, std::vector<unsigned int>* indices);
@@ -21,5 +22,7 @@ private:
 
 	class ElementBufferObject* m_ebo;
 	bool m_isLoaded = false;
+	std::string m_name = "unnamed";
+	class VertexArrayObject* m_vao;
 	class VertexBufferObject* m_vbo;
 };

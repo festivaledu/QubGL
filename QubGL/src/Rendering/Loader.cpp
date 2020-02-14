@@ -22,7 +22,7 @@ vector<unsigned int> Loader::GetIndices() {
 	return m_indices;
 }
 
-vector<Mesh> Loader::GetMeshes() {
+vector<CubeMesh> Loader::GetMeshes() {
 	return m_meshes;
 }
 
@@ -30,7 +30,7 @@ vector<Vertex> Loader::GetVertices() {
 	return m_vertices;
 }
 
-void Loader::GenerateVerticesFromRawObj(vector<Vertex>& vertices, const vector<glm::vec3>& positions, const vector<glm::vec4>& coordinates, const vector<glm::vec3>& normals, string currentLine) {
+void Loader::GenerateVerticesFromRawObj(vector<Vertex>& vertices, const vector<glm::vec3>& positions, const vector<glm::vec2>& coordinates, const vector<glm::vec3>& normals, string currentLine) {
 	vector<string> face, sVertices;
 	Vertex vertex;
 
@@ -39,47 +39,47 @@ void Loader::GenerateVerticesFromRawObj(vector<Vertex>& vertices, const vector<g
 	auto noNormal = false;
 
 	for (auto i = 0; i < int(face.size()); i++) {
-		objhelpers::VertexType vertexType;
+		objhelpers::VertexType vertexType = objhelpers::VertexType::None;
 
 		objhelpers::split(face[i], sVertices, "/");
 
 		if (sVertices.size() == 1) {
-			vertexType = objhelpers::Position;
+			vertexType = objhelpers::VertexType::Position;
 		} else if (sVertices.size() == 2) {
-			vertexType = objhelpers::PositionAndTexture;
+			vertexType = objhelpers::VertexType::PositionAndTexture;
 		} else if (sVertices.size() == 3) {
 			if (sVertices[1] == "") {
-				vertexType = objhelpers::PositionAndNormal;
+				vertexType = objhelpers::VertexType::PositionAndNormal;
 			} else {
-				vertexType = objhelpers::PositionAndTextureAndNormal;
+				vertexType = objhelpers::VertexType::PositionAndTextureAndNormal;
 			}
 		}
 
 		switch (vertexType) {
-		case objhelpers::Position: {
+		case objhelpers::VertexType::Position: {
 			vertex.Position = objhelpers::getElement(positions, sVertices[0]);
-			vertex.Color = glm::vec4(0.F);
+			vertex.TextureCoordinates = glm::vec2(0.F);
 			noNormal = true;
 			vertices.push_back(vertex);
 			break;
 		}
-		case objhelpers::PositionAndTexture: {
+		case objhelpers::VertexType::PositionAndTexture: {
 			vertex.Position = objhelpers::getElement(positions, sVertices[0]);
-			vertex.Color = objhelpers::getElement(coordinates, sVertices[1]);
+			vertex.TextureCoordinates = objhelpers::getElement(coordinates, sVertices[1]);
 			noNormal = true;
 			vertices.push_back(vertex);
 			break;
 		}
-		case objhelpers::PositionAndNormal: {
+		case objhelpers::VertexType::PositionAndNormal: {
 			vertex.Position = objhelpers::getElement(positions, sVertices[0]);
-			vertex.Color = glm::vec4(0.F);
+			vertex.TextureCoordinates = glm::vec2(0.F);
 			vertex.Normal = objhelpers::getElement(normals, sVertices[2]);
 			vertices.push_back(vertex);
 			break;
 		}
-		case objhelpers::PositionAndTextureAndNormal: {
+		case objhelpers::VertexType::PositionAndTextureAndNormal: {
 			vertex.Position = objhelpers::getElement(positions, sVertices[0]);
-			vertex.Color = objhelpers::getElement(coordinates, sVertices[1]);
+			vertex.TextureCoordinates = objhelpers::getElement(coordinates, sVertices[1]);
 			vertex.Normal = objhelpers::getElement(normals, sVertices[2]);
 			vertices.push_back(vertex);
 			break;
@@ -112,7 +112,7 @@ bool Loader::ParseFile(const string& objFilePath) {
 	m_vertices.clear();
 
 	vector<glm::vec3> positions;
-	vector<glm::vec4> coordinates;
+	vector<glm::vec2> coordinates;
 	vector<glm::vec3> normals;
 
 	vector<Vertex> vertices;
@@ -165,14 +165,12 @@ bool Loader::ParseFile(const string& objFilePath) {
 
 		if (objhelpers::firstToken(currentLine) == "vt") {
 			vector<string> sTexture;
-			glm::vec4 vTexture;
+			glm::vec2 vTexture;
 
 			objhelpers::split(objhelpers::tail(currentLine), sTexture, " ");
 
-			vTexture.r = stof(sTexture[0]);
-			vTexture.g = stof(sTexture[1]);
-			vTexture.b = stof(sTexture[2]);
-			vTexture.a = stof(sTexture[3]);
+			vTexture.x = stof(sTexture[0]);
+			vTexture.y = stof(sTexture[1]);
 
 			coordinates.push_back(vTexture);
 		}
@@ -251,7 +249,7 @@ void Loader::TriangulateVertices(vector<unsigned int>& indices, const vector<Ver
 			if (i == 0) {
 				previous = tempVertices[tempVertices.size() - 1];
 			} else {
-				previous = tempVertices[i - 1];
+				previous = tempVertices[(size_t)i - 1];
 			}
 
 			Vertex current = tempVertices[i];
@@ -260,7 +258,7 @@ void Loader::TriangulateVertices(vector<unsigned int>& indices, const vector<Ver
 			if (i == tempVertices.size() - 1) {
 				next = tempVertices[0];
 			} else {
-				next = tempVertices[i + 1];
+				next = tempVertices[(size_t)i + 1];
 			}
 
 			if (tempVertices.size() == 3) {
@@ -299,7 +297,7 @@ void Loader::TriangulateVertices(vector<unsigned int>& indices, const vector<Ver
 				break;
 			}
 
-			float angle = glm::angle(previous.Position - current.Position, next.Position - current.Position) * (180.F / M_PI);
+			float angle = glm::angle(previous.Position - current.Position, next.Position - current.Position) * (180.F / (float)M_PI);
 			if (angle <= 0 && angle >= 180) continue;
 
 			auto inTriangle = false;
