@@ -15,6 +15,7 @@
     <ClCompile Include="src\Rendering\CubeMesh.cpp" />
     <ClCompile Include="src\Rendering\ElementBufferObject.cpp" />
     <ClCompile Include="src\Rendering\Loader.cpp" />
+    <ClCompile Include="src\Rendering\Model.cpp" />
     <ClCompile Include="src\Rendering\OpenGlWindow.cpp" />
     <ClCompile Include="src\Rendering\ShaderProgram.cpp" />
     <ClCompile Include="src\Rendering\Transform.cpp" />
