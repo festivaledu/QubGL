@@ -1,4 +1,6 @@
 #pragma once
+
+#include "GLM\vec2.hpp"
 #include "GLM\vec3.hpp"
 #include "GLM\vec4.hpp"
 
@@ -9,4 +11,5 @@ public:
 	glm::vec3 Position;
 	glm::vec4 Color;
 	glm::vec3 Normal;
+	glm::vec2 TextureCoordinates = glm::vec2(0.F);
 };

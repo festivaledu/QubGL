@@ -16,7 +16,7 @@ void ElementBufferObject::Bind() const {
 
 void ElementBufferObject::BufferData(GLenum bufferType, GLsizeiptr bufferSize, const void* bufferData, GLenum drawMode) {
 	glBufferData(bufferType, bufferSize, bufferData, drawMode);
-	m_indicesCount = bufferSize / sizeof(unsigned int);
+	m_indicesCount = (int)(bufferSize / sizeof(unsigned int));
 }
 
 unsigned int ElementBufferObject::GetIndicesCount() const {

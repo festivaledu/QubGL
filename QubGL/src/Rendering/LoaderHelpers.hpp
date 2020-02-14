@@ -6,11 +6,12 @@
 #include <vector>
 
 namespace objhelpers {
-	enum VertexType {
-		Position = 1,
-		PositionAndTexture = 2,
-		PositionAndNormal = 3,
-		PositionAndTextureAndNormal = 4,
+	enum class VertexType {
+		None = 0,
+		Position,
+		PositionAndTexture,
+		PositionAndNormal,
+		PositionAndTextureAndNormal,
 	};
 
 	template <class T>
@@ -41,17 +42,6 @@ namespace objhelpers {
 		return "";
 	}
 
-	bool inTriangle(glm::vec3 point, glm::vec3 triangleX, glm::vec3 triangleY, glm::vec3 triangleZ) {
-		auto isWithinPrism = isOnSameSide(point, triangleX, triangleY, triangleZ) && isOnSameSide(point, triangleY, triangleX, triangleZ) && isOnSameSide(point, triangleZ, triangleX, triangleY);
-
-		if (!isWithinPrism) return false;
-
-		auto n = glm::triangleNormal(triangleX, triangleY, triangleZ);
-		auto projection = projectVector(point, n);
-
-		return glm::length2(projection) == 0;
-	}
-
 	bool isOnSameSide(glm::vec3 point1, glm::vec3 point2, glm::vec3 a, glm::vec3 b) {
 		auto cp1 = glm::cross(b - a, point1 - a);
 		auto cp2 = glm::cross(b - a, point2 - a);
@@ -62,6 +52,17 @@ namespace objhelpers {
 	glm::vec3 projectVector(const glm::vec3 a, const glm::vec3 b) {
 		auto bn = b / glm::length2(b);
 		return bn * glm::dot(a, bn);
+	}
+
+	bool inTriangle(glm::vec3 point, glm::vec3 triangleX, glm::vec3 triangleY, glm::vec3 triangleZ) {
+		auto isWithinPrism = isOnSameSide(point, triangleX, triangleY, triangleZ) && isOnSameSide(point, triangleY, triangleX, triangleZ) && isOnSameSide(point, triangleZ, triangleX, triangleY);
+
+		if (!isWithinPrism) return false;
+
+		auto n = glm::triangleNormal(triangleX, triangleY, triangleZ);
+		auto projection = projectVector(point, n);
+
+		return glm::length2(projection) == 0;
 	}
 
 	void split(const std::string& in, std::vector<std::string>& out, std::string token) {
