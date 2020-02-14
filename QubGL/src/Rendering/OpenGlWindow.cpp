@@ -6,11 +6,14 @@
 #include <iostream>
 
 #include "Lighting/DirectionalLight.hpp"
+#include "Loader.hpp"
+#include "Model.hpp"
 #include "ShaderProgram.hpp"
 
 OpenGlWindow::OpenGlWindow(const std::string& title, unsigned int width, unsigned int height)
     :m_title(title), m_width(width), m_height(height), m_window(nullptr) {
-    if (!glewInit()) return;
+
+    if (!glfwInit()) return;
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
@@ -52,6 +55,11 @@ void OpenGlWindow::Show() {
     ShaderProgram program("resources/BasicVertex.shader", "resources/BasicFragment.shader");
     program.Bind();
 
+    Loader loader;
+    auto loaded = loader.ParseFile("resources/simple_cube.obj");
+
+    Model model(loader.GetMeshes()[0]);
+
     auto aspectRatio = 1920.F / 1080.F;
 
     glm::mat4 projection = glm::perspective(glm::radians(55.F), aspectRatio, .1F, 100.F);
@@ -80,6 +88,8 @@ void OpenGlWindow::Show() {
         }
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        model.Draw(program);
 
         glfwSwapBuffers(m_window);
         glfwPollEvents();
