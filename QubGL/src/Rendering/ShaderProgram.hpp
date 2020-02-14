@@ -8,17 +8,17 @@ class Model;
 
 class ShaderProgram {
 public:
-	ShaderProgram(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath);
+    ShaderProgram(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath);
 
-	void Bind() const;
-	void SetDirectionalLight(struct DirectionalLight dirLight);
-	void SetModelMatrix(Model& model) const;
-	void SetProjectionMatrix(const glm::mat4& projectionMatrix);
-	void SetViewMatrix(const glm::mat4& viewMatrix);
-	void Unbind() const;
+    void Bind() const;
+    void SetDirectionalLight(struct DirectionalLight dirLight);
+    void SetModelMatrix(Model& model) const;
+    void SetProjectionMatrix(const glm::mat4& projectionMatrix);
+    void SetViewMatrix(const glm::mat4& viewMatrix);
+    void Unbind() const;
 
 private:
-	std::string ParseFile(const std::string& shaderFilePath);
+    std::string ParseFile(const std::string& shaderFilePath);
 
-	unsigned int m_programId;
+    unsigned int m_programId;
 };

@@ -6,5 +6,5 @@ class Window;
 
 class WindowFactory {
 public:
-	static Window* CreateWindow(const std::string& title, unsigned int width, unsigned int height);
+    static Window* CreateWindow(const std::string& title, unsigned int width, unsigned int height);
 };

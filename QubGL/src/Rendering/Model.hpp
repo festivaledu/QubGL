@@ -4,13 +4,13 @@
 
 class Model {
 public:
-	Model(const class CubeMesh& mesh);
-	~Model();
+    Model(const class CubeMesh& mesh);
+    ~Model();
 
-	void Draw(const class ShaderProgram& shader);
-	Transform& GetTransform();
+    void Draw(const class ShaderProgram& shader);
+    Transform& GetTransform();
 
 private:
-	const class CubeMesh& m_mesh;
-	Transform m_transform;
+    const class CubeMesh& m_mesh;
+    Transform m_transform;
 };

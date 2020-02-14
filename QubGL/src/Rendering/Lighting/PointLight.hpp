@@ -6,5 +6,5 @@
 
 struct PointLight : Light {
 public:
-	glm::vec4 Position;
+    glm::vec4 Position;
 };

@@ -6,5 +6,5 @@
 
 struct DirectionalLight : Light {
 public:
-	glm::vec3 Direction;
+    glm::vec3 Direction;
 };

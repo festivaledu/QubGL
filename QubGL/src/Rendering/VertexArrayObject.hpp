@@ -1,20 +1,20 @@
 #pragma once
 
 enum VertexAttribLocation {
-	Position,
-	VertexColor,
-	Normal,
+    Position,
+    VertexColor,
+    Normal,
 };
 
 class VertexArrayObject {
 public:
-	VertexArrayObject();
-	~VertexArrayObject();
+    VertexArrayObject();
+    ~VertexArrayObject();
 
-	void Bind() const;
-	void SetupAttribPointers();
-	void Unbind() const;
+    void Bind() const;
+    void SetupAttribPointers();
+    void Unbind() const;
 
 private:
-	unsigned int m_vao;
+    unsigned int m_vao;
 };
