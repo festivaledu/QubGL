@@ -33,6 +33,7 @@
     <ClInclude Include="src\Rendering\Lighting\PointLight.hpp" />
     <ClInclude Include="src\Rendering\Loader.hpp" />
     <ClInclude Include="src\Rendering\LoaderHelpers.hpp" />
+    <ClInclude Include="src\Rendering\Material.hpp" />
     <ClInclude Include="src\Rendering\Mesh.hpp" />
     <ClInclude Include="src\Rendering\Model.hpp" />
     <ClInclude Include="src\Rendering\OpenGlWindow.hpp" />

@@ -99,5 +99,8 @@
     <ClInclude Include="src\Rendering\LoaderHelpers.hpp">
       <Filter>Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="src\Rendering\Material.hpp">
+      <Filter>Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

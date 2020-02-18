@@ -100,7 +100,118 @@ void Loader::GenerateVerticesFromRawObj(vector<Vertex>& vertices, const vector<g
     }
 }
 
-bool Loader::ParseFile(const string& objFilePath) {
+bool Loader::LoadMaterials(const string& mtlFilePath) {
+    if (mtlFilePath.substr(mtlFilePath.size() - 4, mtlFilePath.size()) != ".mtl") return false;
+
+    ifstream stream(mtlFilePath);
+
+    if (!stream.is_open()) return false;
+
+    auto isListening = false;
+
+    Material tempMaterial;
+
+    string currentLine;
+    while (getline(stream, currentLine)) {
+        if (objhelpers::firstToken(currentLine) == "newmtl") {
+            if (!isListening) {
+                isListening = true;
+
+                if (currentLine.size() > 7) {
+                    tempMaterial.Name = objhelpers::tail(currentLine);
+                } else {
+                    tempMaterial.Name = "none";
+                }
+            } else {
+                Materials.push_back(tempMaterial);
+                tempMaterial = Material();
+
+                if (currentLine.size() > 7) {
+                    tempMaterial.Name = objhelpers::tail(currentLine);
+                } else {
+                    tempMaterial.Name = "none";
+                }
+            }
+        }
+
+        if (objhelpers::firstToken(currentLine) == "Ka") {
+            vector<string> temp;
+            objhelpers::split(objhelpers::tail(currentLine), temp, " ");
+
+            if (temp.size() != 3) continue;
+
+            tempMaterial.Ka.x = stof(temp[0]);
+            tempMaterial.Ka.y = stof(temp[1]);
+            tempMaterial.Ka.z = stof(temp[2]);
+        }
+
+        if (objhelpers::firstToken(currentLine) == "Kd") {
+            vector<string> temp;
+            objhelpers::split(objhelpers::tail(currentLine), temp, " ");
+
+            if (temp.size() != 3) continue;
+
+            tempMaterial.Kd.x = stof(temp[0]);
+            tempMaterial.Kd.y = stof(temp[1]);
+            tempMaterial.Kd.z = stof(temp[2]);
+        }
+
+        if (objhelpers::firstToken(currentLine) == "Ks") {
+            vector<string> temp;
+            objhelpers::split(objhelpers::tail(currentLine), temp, " ");
+
+            if (temp.size() != 3) continue;
+
+            tempMaterial.Ks.x = stof(temp[0]);
+            tempMaterial.Ks.y = stof(temp[1]);
+            tempMaterial.Ks.z = stof(temp[2]);
+        }
+
+        if (objhelpers::firstToken(currentLine) == "Ns") {
+            tempMaterial.Ns = stof(objhelpers::tail(currentLine));
+        }
+
+        if (objhelpers::firstToken(currentLine) == "Ni") {
+            tempMaterial.Ni = stof(objhelpers::tail(currentLine));
+        }
+
+        if (objhelpers::firstToken(currentLine) == "d") {
+            tempMaterial.D = stof(objhelpers::tail(currentLine));
+        }
+
+        if (objhelpers::firstToken(currentLine) == "illum") {
+            tempMaterial.Illum = stoi(objhelpers::tail(currentLine));
+        }
+
+        if (objhelpers::firstToken(currentLine) == "map_Ka") {
+            tempMaterial.MapKa = objhelpers::tail(currentLine);
+        }
+
+        if (objhelpers::firstToken(currentLine) == "map_Kd") {
+            tempMaterial.MapKd = objhelpers::tail(currentLine);
+        }
+
+        if (objhelpers::firstToken(currentLine) == "map_Ks") {
+            tempMaterial.MapKs = objhelpers::tail(currentLine);
+        }
+
+        if (objhelpers::firstToken(currentLine) == "map_Ns") {
+            tempMaterial.MapKa = objhelpers::tail(currentLine);
+        }
+
+        if (objhelpers::firstToken(currentLine) == "map_d") {
+            tempMaterial.MapD = objhelpers::tail(currentLine);
+        }
+
+        if (objhelpers::firstToken(currentLine) == "map_Bump" || objhelpers::firstToken(currentLine) == "map_bump" || objhelpers::firstToken(currentLine) == "bump") {
+            tempMaterial.MapBump = objhelpers::tail(currentLine);
+        }
+    }
+
+    Materials.push_back(tempMaterial);
+
+    return !Materials.empty();
+}
     if (objFilePath.substr(objFilePath.size() - 4, 4) != ".obj") return false;
 
     ifstream stream(objFilePath);
@@ -117,6 +228,7 @@ bool Loader::ParseFile(const string& objFilePath) {
 
     vector<Vertex> vertices;
     vector<unsigned int> indices;
+    vector<string> materialNames;
 
     auto isListening = false;
 
@@ -210,6 +322,44 @@ bool Loader::ParseFile(const string& objFilePath) {
         }
 
         if (objhelpers::firstToken(currentLine) == "usemtl") {
+            materialNames.push_back(objhelpers::tail(currentLine));
+
+            if (!indices.empty() && !vertices.empty()) {
+                tempMesh = CubeMesh(vertices, indices);
+                tempMesh.SetName(meshName);
+
+                while (true) {
+                    tempMesh.SetName(meshName + "_2");
+
+                    for (auto& m : Meshes) {
+                        if (m.GetName() == tempMesh.GetName()) continue;
+                    }
+
+                    break;
+                }
+
+                Meshes.push_back(tempMesh);
+
+                vertices.clear();
+                indices.clear();
+            }
+        }
+
+        if (objhelpers::firstToken(currentLine) == "mtllib") {
+            vector<string> tempMaterialPath;
+            objhelpers::split(objFilePath, tempMaterialPath, "/");
+
+            string materialPath = "";
+
+            if (tempMaterialPath.size() != 1) {
+                for (auto i = 0; i < tempMaterialPath.size() - 1; i++) {
+                    materialPath += tempMaterialPath[i] + "/";
+                }
+            }
+
+            materialPath += objhelpers::tail(currentLine);
+
+            LoadMaterials(materialPath);
 
         }
 

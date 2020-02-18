@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "CubeMesh.hpp"
+#include "Material.hpp"
 #include "Vertex.hpp"
 
 class Loader {
@@ -15,6 +16,7 @@ public:
     std::vector<CubeMesh> GetMeshes();
     std::vector<Vertex> GetVertices();
     bool ParseFile(const std::string& objFilePath);
+    std::vector<Material> Materials;
 
 private:
     void GenerateVerticesFromRawObj(std::vector<Vertex>& vertices, const std::vector<glm::vec3>& positions, const std::vector<glm::vec2>& coordinates, const std::vector<glm::vec3>& normals, std::string currentLine);
