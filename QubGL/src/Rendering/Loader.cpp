@@ -15,19 +15,7 @@
 using namespace std;
 
 Loader::~Loader() {
-    m_meshes.clear();
-}
-
-vector<unsigned int> Loader::GetIndices() {
-    return m_indices;
-}
-
-vector<CubeMesh> Loader::GetMeshes() {
-    return m_meshes;
-}
-
-vector<Vertex> Loader::GetVertices() {
-    return m_vertices;
+    Meshes.clear();
 }
 
 void Loader::GenerateVerticesFromRawObj(vector<Vertex>& vertices, const vector<glm::vec3>& positions, const vector<glm::vec2>& coordinates, const vector<glm::vec3>& normals, string currentLine) {
@@ -212,15 +200,17 @@ bool Loader::LoadMaterials(const string& mtlFilePath) {
 
     return !Materials.empty();
 }
+
+bool Loader::LoadObjects(const string& objFilePath) {
     if (objFilePath.substr(objFilePath.size() - 4, 4) != ".obj") return false;
 
     ifstream stream(objFilePath);
 
     if (!stream.is_open()) return false;
 
-    m_indices.clear();
-    m_meshes.clear();
-    m_vertices.clear();
+    Indices.clear();
+    Meshes.clear();
+    Vertices.clear();
 
     vector<glm::vec3> positions;
     vector<glm::vec2> coordinates;
@@ -242,10 +232,10 @@ bool Loader::LoadMaterials(const string& mtlFilePath) {
                 isListening = true;
             } else {
                 if (!indices.empty() && !vertices.empty()) {
-                    tempMesh = CubeMesh(&vertices, &indices);
+                    tempMesh = CubeMesh(vertices, indices);
                     tempMesh.SetName(meshName);
 
-                    m_meshes.push_back(tempMesh);
+                    Meshes.push_back(tempMesh);
 
                     vertices.clear();
                     indices.clear();
@@ -263,7 +253,7 @@ bool Loader::LoadMaterials(const string& mtlFilePath) {
         }
 
         if (objhelpers::firstToken(currentLine) == "v") {
-            vector<std::string> sPosition;
+            vector<string> sPosition;
             glm::vec3 vPosition;
 
             objhelpers::split(objhelpers::tail(currentLine), sPosition, " ");
@@ -306,7 +296,7 @@ bool Loader::LoadMaterials(const string& mtlFilePath) {
 
             for (auto i = 0; i < int(vVertices.size()); i++) {
                 vertices.push_back(vVertices[i]);
-                m_vertices.push_back(vVertices[i]);
+                Vertices.push_back(vVertices[i]);
             }
 
             vector<unsigned int> vIndices;
@@ -316,8 +306,8 @@ bool Loader::LoadMaterials(const string& mtlFilePath) {
                 auto ii = (unsigned int)((vertices.size() - vVertices.size() + vIndices[i]));
                 indices.push_back(ii);
 
-                ii = (unsigned int)((m_vertices.size() - vVertices.size() + vIndices[i]));
-                m_indices.push_back(ii);
+                ii = (unsigned int)((Vertices.size() - vVertices.size() + vIndices[i]));
+                Indices.push_back(ii);
             }
         }
 
@@ -360,24 +350,30 @@ bool Loader::LoadMaterials(const string& mtlFilePath) {
             materialPath += objhelpers::tail(currentLine);
 
             LoadMaterials(materialPath);
-
-        }
-
-        if (objhelpers::firstToken(currentLine) == "mtllib") {
-
         }
     }
 
     if (!indices.empty() && !vertices.empty()) {
-        tempMesh = CubeMesh(&vertices, &indices);
+        tempMesh = CubeMesh(vertices, indices);
         tempMesh.SetName(meshName);
 
-        m_meshes.push_back(tempMesh);
+        Meshes.push_back(tempMesh);
     }
 
     stream.close();
 
-    return m_indices.empty() && m_meshes.empty() && m_vertices.empty();
+    for (auto i = 0; i < materialNames.size(); i++) {
+        auto materialName = materialNames[i];
+
+        for (auto j = 0; j < Materials.size(); j++) {
+            if (Materials[j].Name == materialName) {
+                Meshes[i].SetMaterial(Materials[j]);
+                break;
+            }
+        }
+    }
+
+    return Indices.empty() && Meshes.empty() && Vertices.empty();
 }
 
 void Loader::TriangulateVertices(vector<unsigned int>& indices, const vector<Vertex>& vertices) {

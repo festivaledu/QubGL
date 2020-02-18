@@ -1,20 +1,23 @@
 #include "CubeMesh.hpp"
 
+#include <iostream>
+
 #include "ElementBufferObject.hpp"
+#include "Material.hpp"
 #include "VertexArrayObject.hpp"
 #include "VertexBufferObject.hpp"
 
-CubeMesh::CubeMesh(std::vector<Vertex>* vertices, std::vector<unsigned int>* indices)
+CubeMesh::CubeMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
     :m_ebo(nullptr), m_vao(nullptr), m_vbo(nullptr) {
     if (!m_isLoaded) {
-        Load(vertices, indices);
+        Load(&vertices, &indices);
     }
 }
 
 void CubeMesh::Bind() const {
-    m_ebo->Bind();
     m_vao->Bind();
     m_vbo->Bind();
+    m_ebo->Bind();
 }
 
 void CubeMesh::Draw() const {
@@ -25,14 +28,18 @@ void CubeMesh::Draw() const {
     Unbind();
 }
 
+Material CubeMesh::GetMaterial() const {
+    return m_material;
+}
+
 std::string CubeMesh::GetName() const {
     return m_name;
 }
 
 void CubeMesh::Load(std::vector<Vertex>* vertices, std::vector<unsigned int>* indices) {
-    m_ebo = new ElementBufferObject();
     m_vao = new VertexArrayObject();
     m_vbo = new VertexBufferObject();
+    m_ebo = new ElementBufferObject();
 
     m_vao->Bind();
     m_vbo->Bind();
@@ -51,19 +58,24 @@ void CubeMesh::Load(std::vector<Vertex>* vertices, std::vector<unsigned int>* in
     m_isLoaded = true;
 }
 
+void CubeMesh::SetMaterial(Material material) {
+    m_material = material;
+}
+
 void CubeMesh::SetName(std::string name) {
     m_name = name;
 }
 
 void CubeMesh::Unbind() const {
-    m_ebo->Unbind();
     m_vao->Unbind();
     m_vbo->Unbind();
+    m_ebo->Unbind();
 }
 
 void CubeMesh::Unload() {
-    delete m_ebo;
     delete m_vao;
+    delete m_vbo;
+    delete m_ebo;
 
     m_isLoaded = false;
 }

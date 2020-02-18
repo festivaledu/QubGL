@@ -56,9 +56,9 @@ void OpenGlWindow::Show() {
     program.Bind();
 
     Loader loader;
-    auto loaded = loader.ParseFile("resources/simple_cube.obj");
+    auto loaded = loader.LoadObjects("resources/Cube.obj");
 
-    Model model(loader.GetMeshes()[0]);
+    Model model(loader.Meshes.at(0));
 
     auto aspectRatio = 1920.F / 1080.F;
 
@@ -69,6 +69,9 @@ void OpenGlWindow::Show() {
     program.SetViewMatrix(camera);
 
     glEnable(GL_DEPTH_TEST);
+
+    auto& transform = model.GetTransform();
+    transform.SetTranslation(0.F, 0.F, -5.F);
 
     DirectionalLight dirLight;
     dirLight.Ambient = glm::vec4(.3F, .3F, .3F, 1.F);

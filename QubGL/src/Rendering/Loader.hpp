@@ -12,17 +12,15 @@ public:
     Loader() {}
     ~Loader();
 
-    std::vector<unsigned int> GetIndices();
-    std::vector<CubeMesh> GetMeshes();
-    std::vector<Vertex> GetVertices();
-    bool ParseFile(const std::string& objFilePath);
+    bool LoadMaterials(const std::string& mtlFilePath);
+    bool LoadObjects(const std::string& objFilePath);
+
+    std::vector<unsigned int> Indices;
     std::vector<Material> Materials;
+    std::vector<CubeMesh> Meshes;
+    std::vector<Vertex> Vertices;
 
 private:
     void GenerateVerticesFromRawObj(std::vector<Vertex>& vertices, const std::vector<glm::vec3>& positions, const std::vector<glm::vec2>& coordinates, const std::vector<glm::vec3>& normals, std::string currentLine);
     void TriangulateVertices(std::vector<unsigned int>& indices, const std::vector<Vertex>& vertices);
-
-    std::vector<unsigned int> m_indices;
-    std::vector<CubeMesh> m_meshes;
-    std::vector<Vertex> m_vertices;
 };
