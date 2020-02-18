@@ -4,6 +4,7 @@
 
 #include "ElementBufferObject.hpp"
 #include "Material.hpp"
+#include "Vertex.hpp"
 #include "VertexArrayObject.hpp"
 #include "VertexBufferObject.hpp"
 
@@ -44,13 +45,13 @@ void CubeMesh::Load(std::vector<Vertex>* vertices, std::vector<unsigned int>* in
     m_vao->Bind();
     m_vbo->Bind();
 
-    m_vbo->BufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    m_vbo->BufferData(GL_ARRAY_BUFFER, vertices->size() * sizeof(Vertex), &vertices->front(), GL_STATIC_DRAW);
     m_vao->SetupAttribPointers();
 
     m_vbo->Unbind();
     m_ebo->Bind();
 
-    m_ebo->BufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    m_ebo->BufferData(GL_ELEMENT_ARRAY_BUFFER, indices->size() * sizeof(unsigned int), &indices->front(), GL_STATIC_DRAW);
 
     m_ebo->Unbind();
     m_vao->Unbind();

@@ -303,10 +303,10 @@ bool Loader::LoadObjects(const string& objFilePath) {
             TriangulateVertices(vIndices, vVertices);
 
             for (auto i = 0; i < int(vIndices.size()); i++) {
-                auto ii = (unsigned int)((vertices.size() - vVertices.size() + vIndices[i]));
+                auto ii = (unsigned int)((vertices.size() - vVertices.size()) + vIndices[i]);
                 indices.push_back(ii);
 
-                ii = (unsigned int)((Vertices.size() - vVertices.size() + vIndices[i]));
+                ii = (unsigned int)((Vertices.size() - vVertices.size()) + vIndices[i]);
                 Indices.push_back(ii);
             }
         }
@@ -425,7 +425,7 @@ void Loader::TriangulateVertices(vector<unsigned int>& indices, const vector<Ver
                     if (vertices[j].Position == next.Position) indices.push_back(j);
                 }
 
-                glm::vec3 tempVector;
+                glm::vec3 tempVector(0.F);
                 for (auto j = 0; j < int(tempVertices.size()); j++) {
                     if (tempVertices[j].Position != current.Position && tempVertices[j].Position != previous.Position && tempVertices[j].Position != next.Position) {
                         tempVector = tempVertices[j].Position;
@@ -444,7 +444,7 @@ void Loader::TriangulateVertices(vector<unsigned int>& indices, const vector<Ver
             }
 
             float angle = glm::angle(previous.Position - current.Position, next.Position - current.Position) * (180.F / (float)M_PI);
-            if (angle <= 0 && angle >= 180) continue;
+            if (angle <= 0 || angle >= 180) continue; // was &&
 
             auto inTriangle = false;
             for (auto j = 0; j < int(vertices.size()); j++) {
