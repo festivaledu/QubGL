@@ -138,6 +138,7 @@ void ShaderProgram::SetModelMatrix(Model& model) const {
     glm::mat4 scale = glm::scale(glm::mat4(1.F), transform.GetScale());
 
     const glm::mat4 modelMatrix = translation * finalRotation * scale;
+    //const glm::mat4 modelMatrix = scale * finalRotation * translation;
 
     glUniformMatrix4fv(locationId, 1, GL_FALSE, &modelMatrix[0][0]);
 }
