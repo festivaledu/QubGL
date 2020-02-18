@@ -1,9 +1,9 @@
 #pragma once
 
 enum VertexAttribLocation {
-    Position,
-    VertexColor,
-    Normal,
+    Position = 0,
+    VertexColor = 1,
+    Normal = 2,
 };
 
 class VertexArrayObject {
