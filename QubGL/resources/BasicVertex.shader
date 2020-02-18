@@ -15,7 +15,7 @@ void main()
 {
 	// Calculate the Vertex Position.
 	mat4 modelView = ViewMatrix * ModelMatrix;
-	gl_Position = ProjectionMatrix * modelView * vec4(position.x, position.y, position.z, 1.0f);	
+	gl_Position = ProjectionMatrix * modelView * vec4(position.x, position.y, position.z, 1.0f);
 
 	// Calculate the Vertex Normal.
 	mat4 normalMatrix = transpose(inverse(modelView));
