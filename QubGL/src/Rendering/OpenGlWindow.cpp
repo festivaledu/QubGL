@@ -5,10 +5,36 @@
 
 #include <iostream>
 
+#include "../Logic/Cube.hpp"
 #include "Lighting/DirectionalLight.hpp"
 #include "Loader.hpp"
 #include "Model.hpp"
 #include "ShaderProgram.hpp"
+
+Cube cube(nullptr);
+
+void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (action != GLFW_PRESS) return;
+    if (cube.GetIsRotating()) return;
+
+    auto d = Direction::Clockwise;
+
+    if ((mods && GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT) d = Direction::CounterClockwise;
+
+    if (key == GLFW_KEY_B) {
+        cube.Rotate(Side::Back, d);
+    } else if (key == GLFW_KEY_F) {
+        cube.Rotate(Side::Front, d);
+    } else if (key == GLFW_KEY_L) {
+        cube.Rotate(Side::Left, d);
+    } else if (key == GLFW_KEY_R) {
+        cube.Rotate(Side::Right, d);
+    } else if (key == GLFW_KEY_T) {
+        cube.Rotate(Side::Top, d);
+    } else if (key == GLFW_KEY_U) {
+        cube.Rotate(Side::Bottom, d);
+    }
+}
 
 OpenGlWindow::OpenGlWindow(const std::string& title, unsigned int width, unsigned int height)
     :m_title(title), m_width(width), m_height(height), m_window(nullptr) {
@@ -36,6 +62,8 @@ OpenGlWindow::OpenGlWindow(const std::string& title, unsigned int width, unsigne
     std::cout << "Open GL Version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
 
+    glfwSetKeyCallback(m_window, OnKey);
+
     glClearColor(0.F, 0.F, 0.F, 1.F);
 }
 
@@ -59,7 +87,9 @@ void OpenGlWindow::Show() {
     auto loaded = loader.LoadObjects("resources/Cube2.obj");
 
     Mesh mesh = loader.Meshes.at(0);
-    Model model(mesh);
+    
+    cube.SetShader(&program);
+    cube.GenerateModels(mesh);
 
     auto aspectRatio = 1920.F / 1080.F;
 
@@ -70,9 +100,6 @@ void OpenGlWindow::Show() {
     program.SetViewMatrix(camera);
 
     glEnable(GL_DEPTH_TEST);
-
-    auto& transform = model.GetTransform();
-    transform.SetRotation(-90.F, 0.F, 0.F);
 
     DirectionalLight dirLight;
     dirLight.Ambient = glm::vec4(.3F, .3F, .3F, 1.F);
@@ -85,18 +112,15 @@ void OpenGlWindow::Show() {
     auto angle = 0.F;
 
     while (!glfwWindowShouldClose(m_window)) {
-        angle += .1F;
+        angle += .05F;
 
         if (angle > 360) {
             angle = 0;
         }
 
-        //transform.SetRotation(angle, 0.F, 0.F);
-        transform.SetRotation(0.F, angle, 0.F);
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        model.Draw(program);
+        cube.Draw();
 
         glfwSwapBuffers(m_window);
         glfwPollEvents();

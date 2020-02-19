@@ -14,9 +14,8 @@ public:
     virtual void Show() override;
 
 private:
-    GLFWwindow* m_window;
-
     unsigned int m_height;
     std::string m_title;
     unsigned int m_width;
+    GLFWwindow* m_window;
 };

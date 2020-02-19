@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -35,6 +35,9 @@
     <ClCompile Include="src\Rendering\Mesh.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="src\Logic\Cube.cpp">
+      <Filter>Logic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Rendering">
@@ -42,6 +45,9 @@
     </Filter>
     <Filter Include="Rendering\Lighting">
       <UniqueIdentifier>{dbf56e84-eb93-4a94-b402-c405506a8c67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Logic">
+      <UniqueIdentifier>{8dd958c8-72a2-464d-ae00-f6fa502a7ab6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -98,6 +104,9 @@
     </ClInclude>
     <ClInclude Include="src\Rendering\Mesh.hpp">
       <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Logic\Cube.hpp">
+      <Filter>Logic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
