@@ -3,8 +3,8 @@
 #include <string>
 #include <vector>
 
-#include "CubeMesh.hpp"
 #include "Material.hpp"
+#include "Mesh.hpp"
 #include "Vertex.hpp"
 
 class Loader {
@@ -17,7 +17,7 @@ public:
 
     std::vector<unsigned int> Indices;
     std::vector<Material> Materials;
-    std::vector<CubeMesh> Meshes;
+    std::vector<Mesh> Meshes;
     std::vector<Vertex> Vertices;
 
 private:

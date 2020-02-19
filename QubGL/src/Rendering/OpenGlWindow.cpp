@@ -58,7 +58,7 @@ void OpenGlWindow::Show() {
     Loader loader;
     auto loaded = loader.LoadObjects("resources/Cube2.obj");
 
-    CubeMesh mesh = loader.Meshes.at(0);
+    Mesh mesh = loader.Meshes.at(0);
     Model model(mesh);
 
     auto aspectRatio = 1920.F / 1080.F;

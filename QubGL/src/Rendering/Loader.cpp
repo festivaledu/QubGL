@@ -8,8 +8,8 @@
 #include <cmath>
 #include <fstream>
 
-#include "CubeMesh.hpp"
 #include "LoaderHelpers.hpp"
+#include "Mesh.hpp"
 #include "Vertex.hpp"
 
 using namespace std;
@@ -223,7 +223,7 @@ bool Loader::LoadObjects(const string& objFilePath) {
     auto isListening = false;
 
     string meshName;
-    CubeMesh tempMesh;
+    Mesh tempMesh;
 
     string currentLine;
     while (getline(stream, currentLine)) {
@@ -232,7 +232,7 @@ bool Loader::LoadObjects(const string& objFilePath) {
                 isListening = true;
             } else {
                 if (!indices.empty() && !vertices.empty()) {
-                    tempMesh = CubeMesh(vertices, indices);
+                    tempMesh = Mesh(vertices, indices);
                     tempMesh.SetName(meshName);
 
                     Meshes.push_back(tempMesh);
@@ -315,7 +315,7 @@ bool Loader::LoadObjects(const string& objFilePath) {
             materialNames.push_back(objhelpers::tail(currentLine));
 
             if (!indices.empty() && !vertices.empty()) {
-                tempMesh = CubeMesh(vertices, indices);
+                tempMesh = Mesh(vertices, indices);
                 tempMesh.SetName(meshName);
 
                 while (true) {
@@ -354,7 +354,7 @@ bool Loader::LoadObjects(const string& objFilePath) {
     }
 
     if (!indices.empty() && !vertices.empty()) {
-        tempMesh = CubeMesh(vertices, indices);
+        tempMesh = Mesh(vertices, indices);
         tempMesh.SetName(meshName);
 
         Meshes.push_back(tempMesh);
