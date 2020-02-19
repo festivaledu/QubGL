@@ -72,7 +72,7 @@ void OpenGlWindow::Show() {
     glEnable(GL_DEPTH_TEST);
 
     auto& transform = model.GetTransform();
-    transform.SetTranslation(0.F, 0.F, 0.F);
+    transform.SetRotation(-90.F, 0.F, 0.F);
 
     DirectionalLight dirLight;
     dirLight.Ambient = glm::vec4(.3F, .3F, .3F, 1.F);
@@ -82,16 +82,17 @@ void OpenGlWindow::Show() {
 
     program.SetDirectionalLight(dirLight);
 
-    auto angleY = 0.F;
+    auto angle = 0.F;
 
     while (!glfwWindowShouldClose(m_window)) {
-        angleY += .05F;
+        angle += .1F;
 
-        if (angleY > 360) {
-            angleY = 0;
+        if (angle > 360) {
+            angle = 0;
         }
 
-        transform.SetRotation(angleY, angleY, angleY);
+        //transform.SetRotation(angle, 0.F, 0.F);
+        transform.SetRotation(0.F, angle, 0.F);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
