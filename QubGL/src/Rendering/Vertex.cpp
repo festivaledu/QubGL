@@ -7,6 +7,7 @@
 
 static int i = 0;
 static int n = 0;
+
 static glm::vec4 c[] = {
     glm::vec4(0.F, .6F, .28F, 1.F), // Green
     glm::vec4(.725F, 0.F, 0.F, 1.F), // Red

@@ -8,6 +8,9 @@ struct Material {
     Material() {
         D = 0.F;
         Illum = 0;
+        Ka = glm::vec3(0.F);
+        Kd = glm::vec3(0.F);
+        Ks = glm::vec3(0.F);
         Name;
         Ni = 0.F;
         Ns = 0.F;

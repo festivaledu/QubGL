@@ -1,4 +1,4 @@
-#include "CubeMesh.hpp"
+#include "Mesh.hpp"
 
 #include <iostream>
 
@@ -8,20 +8,20 @@
 #include "VertexArrayObject.hpp"
 #include "VertexBufferObject.hpp"
 
-CubeMesh::CubeMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
+Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
     :m_ebo(nullptr), m_vao(nullptr), m_vbo(nullptr) {
     if (!m_isLoaded) {
         Load(&vertices, &indices);
     }
 }
 
-void CubeMesh::Bind() const {
+void Mesh::Bind() const {
     m_vao->Bind();
     m_vbo->Bind();
     m_ebo->Bind();
 }
 
-void CubeMesh::Draw() const {
+void Mesh::Draw() const {
     Bind();
 
     glDrawElements(GL_TRIANGLES, m_ebo->GetIndicesCount(), GL_UNSIGNED_INT, (void*)0);
@@ -29,15 +29,15 @@ void CubeMesh::Draw() const {
     Unbind();
 }
 
-Material CubeMesh::GetMaterial() const {
+Material Mesh::GetMaterial() const {
     return m_material;
 }
 
-std::string CubeMesh::GetName() const {
+std::string Mesh::GetName() const {
     return m_name;
 }
 
-void CubeMesh::Load(std::vector<Vertex>* vertices, std::vector<unsigned int>* indices) {
+void Mesh::Load(std::vector<Vertex>* vertices, std::vector<unsigned int>* indices) {
     m_vao = new VertexArrayObject();
     m_vbo = new VertexBufferObject();
     m_ebo = new ElementBufferObject();
@@ -59,21 +59,21 @@ void CubeMesh::Load(std::vector<Vertex>* vertices, std::vector<unsigned int>* in
     m_isLoaded = true;
 }
 
-void CubeMesh::SetMaterial(Material material) {
+void Mesh::SetMaterial(Material material) {
     m_material = material;
 }
 
-void CubeMesh::SetName(std::string name) {
+void Mesh::SetName(std::string name) {
     m_name = name;
 }
 
-void CubeMesh::Unbind() const {
+void Mesh::Unbind() const {
     m_vao->Unbind();
     m_vbo->Unbind();
     m_ebo->Unbind();
 }
 
-void CubeMesh::Unload() {
+void Mesh::Unload() {
     delete m_vao;
     delete m_vbo;
     delete m_ebo;

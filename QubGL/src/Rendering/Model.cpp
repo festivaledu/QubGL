@@ -1,10 +1,12 @@
 #include "Model.hpp"
 
-#include "CubeMesh.hpp"
+#include "Mesh.hpp"
 #include "ShaderProgram.hpp"
 
-Model::Model(const CubeMesh& mesh)
-    :m_mesh(mesh) { }
+Model::Model(const Mesh& mesh)
+    :m_mesh(mesh) {
+    Position = glm::vec3(0.F);
+}
 
 Model::~Model() { }
 

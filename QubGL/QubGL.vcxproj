@@ -11,8 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Logic\Cube.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Rendering\CubeMesh.cpp" />
+    <ClCompile Include="src\Rendering\Mesh.cpp" />
     <ClCompile Include="src\Rendering\ElementBufferObject.cpp" />
     <ClCompile Include="src\Rendering\Loader.cpp" />
     <ClCompile Include="src\Rendering\Model.cpp" />
@@ -25,8 +26,9 @@
     <ClCompile Include="src\Rendering\WindowFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Logic\Cube.hpp" />
     <ClInclude Include="src\Rendering\Color.hpp" />
-    <ClInclude Include="src\Rendering\CubeMesh.hpp" />
+    <ClInclude Include="src\Rendering\Mesh.hpp" />
     <ClInclude Include="src\Rendering\ElementBufferObject.hpp" />
     <ClInclude Include="src\Rendering\Lighting\DirectionalLight.hpp" />
     <ClInclude Include="src\Rendering\Lighting\Light.hpp" />
@@ -34,7 +36,6 @@
     <ClInclude Include="src\Rendering\Loader.hpp" />
     <ClInclude Include="src\Rendering\LoaderHelpers.hpp" />
     <ClInclude Include="src\Rendering\Material.hpp" />
-    <ClInclude Include="src\Rendering\Mesh.hpp" />
     <ClInclude Include="src\Rendering\Model.hpp" />
     <ClInclude Include="src\Rendering\OpenGlWindow.hpp" />
     <ClInclude Include="src\Rendering\ShaderProgram.hpp" />
