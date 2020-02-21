@@ -75,11 +75,11 @@ void Cube::FinishRotate() {
             if (m_rotateDirection == Direction::Clockwise) {
                 auto y = p->Position.y;
                 p->Position.y = p->Position.z;
-                p->Position.z = y * -1;
+                p->Position.z = (y * -1) + 0.F;
             } else {
                 auto z = p->Position.z;
                 p->Position.z = p->Position.y;
-                p->Position.y = z * -1;
+                p->Position.y = (z * -1) + 0.F;
             }
             break;
         case Side::Bottom:
@@ -87,11 +87,11 @@ void Cube::FinishRotate() {
             if (m_rotateDirection == Direction::Clockwise) {
                 auto z = p->Position.z;
                 p->Position.z = p->Position.x;
-                p->Position.x = z * -1;
+                p->Position.x = (z * -1) + 0.F;
             } else {
                 auto x = p->Position.x;
                 p->Position.x = p->Position.z;
-                p->Position.z = x * -1;
+                p->Position.z = (x * -1) + 0.F;
             }
             break;
         case Side::Back:
@@ -99,11 +99,11 @@ void Cube::FinishRotate() {
             if (m_rotateDirection == Direction::Clockwise) {
                 auto x = p->Position.x;
                 p->Position.x = p->Position.y;
-                p->Position.y = x * -1;
+                p->Position.y = (x * -1) + 0.F;
             } else {
                 auto y = p->Position.y;
                 p->Position.y = p->Position.x;
-                p->Position.x = y * -1;
+                p->Position.x = (y * -1) + 0.F;
             }
             break;
         }
