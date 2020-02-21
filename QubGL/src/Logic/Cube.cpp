@@ -65,10 +65,50 @@ void Cube::Draw() {
     }
 }
 
+std::vector<std::string> sides = { "Keine", "Unten", "Links", "Hinten", "Vorne", "Rechts", "Oben" };
+std::vector<int> colors = { 42, 41, 44, 43, 47, 103 };
+
 void Cube::FinishRotate() {
     if (a != m_rotateAngle) return;
 
-    for (auto p : GetSide(m_rotateSide)) {
+    auto pointers = GetSide(m_rotateSide);
+
+    std::cout << std::endl << sides[(int)m_rotateSide] << " gedreht " << (m_rotateDirection == Direction::Clockwise ? "im" : "gegen den") << " Uhrzeigersinn" << std::endl;
+
+    for (auto p : pointers) {
+        for (auto c : p->Colors) {
+            // std::cout << colors[c] << " ";
+            std::cout << "\x1B[" + std::to_string(colors[c]) + "m   \033[0m";
+        }
+
+        std::cout << std::endl << "(X: " << p->Position.x << " | Y: " << p->Position.y << " | Z: " << p->Position.z << " )" << std::endl;
+
+        /*if ((m_rotateDirection == Direction::Clockwise && m_rotateSide == Side::Left) || (m_rotateDirection == Direction::CounterClockwise && m_rotateSide == Side::Right)) {
+            auto z = p->Position.z;
+            p->Position.z = p->Position.y;
+            p->Position.y = z * -1;
+        } else if ((m_rotateDirection == Direction::CounterClockwise && m_rotateSide == Side::Left) || (m_rotateDirection == Direction::Clockwise && m_rotateSide == Side::Right)) {
+            auto y = p->Position.y;
+            p->Position.y = p->Position.z;
+            p->Position.z = y * -1;
+        } else if ((m_rotateDirection == Direction::Clockwise && m_rotateSide == Side::Bottom) || (m_rotateDirection == Direction::CounterClockwise && m_rotateSide == Side::Top)) {
+            auto x = p->Position.x;
+            p->Position.x = p->Position.z;
+            p->Position.z = x * -1;
+        } else if ((m_rotateDirection == Direction::CounterClockwise && m_rotateSide == Side::Bottom) || (m_rotateDirection == Direction::Clockwise && m_rotateSide == Side::Top)) {
+            auto z = p->Position.z;
+            p->Position.z = p->Position.x;
+            p->Position.x = z * -1;
+        } else if ((m_rotateDirection == Direction::Clockwise && m_rotateSide == Side::Back) || (m_rotateDirection == Direction::CounterClockwise && m_rotateSide == Side::Front)) {
+            auto y = p->Position.y;
+            p->Position.y = p->Position.x;
+            p->Position.x = y * -1;
+        } else if ((m_rotateDirection == Direction::CounterClockwise && m_rotateSide == Side::Back) || (m_rotateDirection == Direction::Clockwise && m_rotateSide == Side::Front)) {
+            auto x = p->Position.x;
+            p->Position.x = p->Position.y;
+            p->Position.y = x * -1;
+        }*/
+
         switch (m_rotateSide) {
         case Side::Left:
         case Side::Right:
@@ -107,6 +147,8 @@ void Cube::FinishRotate() {
             }
             break;
         }
+
+        std::cout << "(X: " << p->Position.x << " | Y: " << p->Position.y << " | Z: " << p->Position.z << " )" << std::endl;
     }
 
     m_isRotating = false;
@@ -131,9 +173,9 @@ void Cube::GenerateModels(const Mesh mesh) {
                 transform.SetScale(.4F, .4F, .4F);
                 transform.SetTranslation(c, l, r);
 
-                /*if (l == 1) {
-                    a = 45.F;
-
+                if (l == 1 && c == -1 && r == 1) {
+                    transform.SetRotation(0.F, 0.F, 0.F);
+                }
                     transform.SetRotation(0.F, a, 0.F);
 
                     auto translation = glm::vec3(c, l, r) * RotateY(glm::radians(a));
@@ -175,7 +217,7 @@ void Cube::GenerateSides() {
 
     m_pointers[17]->Colors = { Color::Red, Color::Blue, Color::White };
     m_pointers[18]->Colors = { Color::Red, Color::White };
-    m_pointers[19]->Colors = { Color::Green, Color::Green, Color::White };
+    m_pointers[19]->Colors = { Color::Red, Color::Green, Color::White };
 
     m_pointers[20]->Colors = { Color::Red, Color::Blue };
     m_pointers[21]->Colors = { Color::Red };
@@ -226,7 +268,7 @@ std::vector<Model*> Cube::GetSide(Side side) {
 void Cube::Rotate(Side side, Direction direction) {
     if (side == Side::None) return;
 
-    auto& rotation = GetSide(side)[0]->GetTransform().GetRotation();
+    auto rotation = GetSide(side)[0]->GetTransform().GetRotation();
 
     switch (side) {
     case Side::Left:
