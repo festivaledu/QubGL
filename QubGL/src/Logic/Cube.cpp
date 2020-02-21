@@ -31,23 +31,24 @@ void Cube::Draw() {
 
         for (auto p : GetSide(m_rotateSide)) {
             auto& tf = p->GetTransform();
+            auto r = tf.GetRotation();
 
             glm::vec3 m(p->Position);
 
             switch (m_rotateSide) {
             case Side::Left:
             case Side::Right:
-                tf.SetRotation(a, 0.F, 0.F);
+                tf.SetRotation(a, r.y, r.z);
                 m = glm::vec3(p->Position) * RotateX(glm::radians(a));
                 break;
             case Side::Bottom:
             case Side::Top:
-                tf.SetRotation(0.F, a, 0.F);
+                tf.SetRotation(r.x, a, r.z);
                 m = glm::vec3(p->Position) * RotateY(glm::radians(a));
                 break;
             case Side::Back:
             case Side::Front:
-                tf.SetRotation(0.F, 0.F, a);
+                tf.SetRotation(r.x, r.y, a);
                 m = glm::vec3(p->Position) * RotateZ(glm::radians(a));
                 break;
             default:
@@ -58,6 +59,11 @@ void Cube::Draw() {
         }
 
         FinishRotate();
+    } else {
+        for (auto p : m_pointers) {
+            auto& tf = p->GetTransform();
+            tf.SetTranslation(p->Position.x, p->Position.y, p->Position.z);
+        }
     }
 
     for (auto m : m_models) {
@@ -176,11 +182,6 @@ void Cube::GenerateModels(const Mesh mesh) {
                 if (l == 1 && c == -1 && r == 1) {
                     transform.SetRotation(0.F, 0.F, 0.F);
                 }
-                    transform.SetRotation(0.F, a, 0.F);
-
-                    auto translation = glm::vec3(c, l, r) * RotateY(glm::radians(a));
-                    transform.SetTranslation(translation.x, translation.y, translation.z);
-                }*/
 
                 m_models.push_back(model);
                 m_pointers.push_back(&m_models.back());
