@@ -1,8 +1,5 @@
 #include "OpenGlWindow.hpp"
 
-#include "GLEW/glew.h"
-#include "GLFW/glfw3.h"
-
 #include <iostream>
 
 #include "../Logic/Cube.hpp"
@@ -17,9 +14,7 @@ void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (action != GLFW_PRESS) return;
     if (cube.GetIsRotating()) return;
 
-    auto d = Direction::Clockwise;
-
-    if ((mods && GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT) d = Direction::CounterClockwise;
+    auto d = ((mods && GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT) ? Direction::CounterClockwise : Direction::Clockwise;
 
     if (key == GLFW_KEY_B) {
         cube.Rotate(Side::Back, d);
@@ -34,6 +29,41 @@ void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
     } else if (key == GLFW_KEY_U) {
         cube.Rotate(Side::Bottom, d);
     }
+
+	switch (key) {
+	/// Note: https://developer.valvesoftware.com/w/images/6/6c/Hammer_Axis_visual_guide.png
+	// Cube controls
+	case GLFW_KEY_KP_8:
+		cube.Rotate(Axis::Y, Direction::Clockwise);
+		break;
+	case GLFW_KEY_KP_2:
+		cube.Rotate(Axis::Y, Direction::CounterClockwise);
+		break;
+	case GLFW_KEY_KP_4:
+		cube.Rotate(Axis::Z, Direction::Clockwise);
+		break;
+	case GLFW_KEY_KP_6:
+		cube.Rotate(Axis::Z, Direction::CounterClockwise);
+		break;
+
+	// Cube section controls
+	case GLFW_KEY_KP_7:
+		cube.Rotate(Side::Left, Direction::Clockwise);
+		break;
+	case GLFW_KEY_KP_1:
+		cube.Rotate(Side::Left, Direction::CounterClockwise);
+		break;
+	case GLFW_KEY_KP_9:
+		cube.Rotate(Side::Right, Direction::Clockwise);
+		break;
+	case GLFW_KEY_KP_3:
+		cube.Rotate(Side::Right, Direction::CounterClockwise);
+		break;
+
+	// Camera movement controls
+	// Camera rotation controls
+	default: break;
+	}
 }
 
 OpenGlWindow::OpenGlWindow(const std::string& title, unsigned int width, unsigned int height)
