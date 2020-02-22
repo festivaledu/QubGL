@@ -124,6 +124,7 @@ OpenGlWindow::OpenGlWindow(const std::string& title, unsigned int width, unsigne
 
     std::cout << "Open GL Version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
+	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 
     glfwSetKeyCallback(m_window, OnKey);
 
