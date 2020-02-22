@@ -46,7 +46,9 @@ void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
 			m_cameraCenter.x += .5F;
 			break;
 		}
-	} else if (action != GLFW_PRESS || cube.GetIsRotating()) return;
+	}
+	
+	if (action != GLFW_PRESS || cube.GetIsRotating()) return;
 
     auto d = ((mods && GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT) ? Direction::CounterClockwise : Direction::Clockwise;
 
