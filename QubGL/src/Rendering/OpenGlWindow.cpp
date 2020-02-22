@@ -139,15 +139,7 @@ void OpenGlWindow::Show() {
 
     program.SetDirectionalLight(dirLight);
 
-    auto angle = 0.F;
-
     while (!glfwWindowShouldClose(m_window)) {
-        angle += .05F;
-
-        if (angle > 360) {
-            angle = 0;
-        }
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         cube.Draw();
