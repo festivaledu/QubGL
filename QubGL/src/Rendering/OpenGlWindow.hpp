@@ -2,10 +2,6 @@
 
 #include "Window.hpp"
 
-#include "GLEW/glew.h"
-#include "GLFW/glfw3.h"
-#include "GLM/glm.hpp"
-
 struct GLFWwindow;
 
 class OpenGlWindow : public Window {

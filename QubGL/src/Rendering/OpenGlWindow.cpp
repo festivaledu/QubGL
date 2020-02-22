@@ -1,5 +1,8 @@
 #include "OpenGlWindow.hpp"
 
+#include "GLEW/glew.h"
+#include "GLFW/glfw3.h"
+
 #include <iostream>
 
 #include "../Logic/Cube.hpp"
@@ -8,11 +11,42 @@
 #include "Model.hpp"
 #include "ShaderProgram.hpp"
 
+glm::vec3 m_cameraPosition = glm::vec3(0.F, 0.F, 5.F);
+glm::vec3 m_cameraCenter = glm::vec3(0.F, 0.F, -1.F);
 Cube cube(nullptr);
 
 void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    if (action != GLFW_PRESS) return;
-    if (cube.GetIsRotating()) return;
+	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+		switch (key) {
+		case GLFW_KEY_W:
+			m_cameraPosition.z -= .5F;
+			break;
+		case GLFW_KEY_S:
+			m_cameraPosition.z += .5F;
+			break;
+		case GLFW_KEY_A:
+			m_cameraPosition.x -= .5F;
+			m_cameraCenter.x -= .5F;
+			break;
+		case GLFW_KEY_D:
+			m_cameraPosition.x += .5F;
+			m_cameraCenter.x += .5F;
+			break;
+
+		case GLFW_KEY_UP:
+			m_cameraCenter.y += .5F;
+			break;
+		case GLFW_KEY_DOWN:
+			m_cameraCenter.y -= .5F;
+			break;
+		case GLFW_KEY_LEFT:
+			m_cameraCenter.x -= .5F;
+			break;
+		case GLFW_KEY_RIGHT:
+			m_cameraCenter.x += .5F;
+			break;
+		}
+	} else if (action != GLFW_PRESS || cube.GetIsRotating()) return;
 
     auto d = ((mods && GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT) ? Direction::CounterClockwise : Direction::Clockwise;
 
@@ -59,9 +93,6 @@ void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	case GLFW_KEY_KP_3:
 		cube.Rotate(Side::Right, Direction::CounterClockwise);
 		break;
-
-	// Camera movement controls
-	// Camera rotation controls
 	default: break;
 	}
 }
@@ -126,9 +157,6 @@ void OpenGlWindow::Show() {
     glm::mat4 projection = glm::perspective(glm::radians(55.F), aspectRatio, .1F, 100.F);
     program.SetProjectionMatrix(projection);
 
-    glm::mat4 camera = glm::lookAt(glm::vec3(0.F, 0.F, 5.F), glm::vec3(0.F, 0.F, -1.F), glm::vec3(0.F, 1.F, 0.F));
-    program.SetViewMatrix(camera);
-
     glEnable(GL_DEPTH_TEST);
 
     DirectionalLight dirLight;
@@ -146,6 +174,9 @@ void OpenGlWindow::Show() {
 
         glfwSwapBuffers(m_window);
         glfwPollEvents();
+
+		glm::mat4 camera = glm::lookAt(m_cameraPosition, m_cameraCenter, glm::vec3(0.F, 1.F, 0.F));
+		program.SetViewMatrix(camera);
     }
 
     glfwTerminate();
