@@ -11,43 +11,22 @@
 #include "Model.hpp"
 #include "ShaderProgram.hpp"
 
-glm::vec3 m_cameraPosition = glm::vec3(0.F, 0.F, 5.F);
-glm::vec3 m_cameraCenter = glm::vec3(0.F, 0.F, -1.F);
+glm::vec3 m_cameraPosition   = glm::vec3(0.F, 0.F,  5.F);
+glm::vec3 m_cameraFront = glm::vec3(0.F, 0.F, -1.F);
+glm::vec3 m_cameraUp    = glm::vec3(0.F, 1.F,  0.F);
+
+bool m_mouseDidMove = false;
+float m_cameraSensitivity = .15F;
+float m_cameraYaw = -90.F;
+float m_cameraPitch = 0.F;
+float m_cameraPreviousX = 800.F / 2.F;
+float m_cameraPreviousY = 600.F / 2.F;
+float m_cameraFieldOfView = 45.F;
+
 Cube cube(nullptr);
 
 void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-		switch (key) {
-		case GLFW_KEY_W:
-			m_cameraPosition.z -= .5F;
-			break;
-		case GLFW_KEY_S:
-			m_cameraPosition.z += .5F;
-			break;
-		case GLFW_KEY_A:
-			m_cameraPosition.x -= .5F;
-			m_cameraCenter.x -= .5F;
-			break;
-		case GLFW_KEY_D:
-			m_cameraPosition.x += .5F;
-			m_cameraCenter.x += .5F;
-			break;
-
-		case GLFW_KEY_UP:
-			m_cameraCenter.y += .5F;
-			break;
-		case GLFW_KEY_DOWN:
-			m_cameraCenter.y -= .5F;
-			break;
-		case GLFW_KEY_LEFT:
-			m_cameraCenter.x -= .5F;
-			break;
-		case GLFW_KEY_RIGHT:
-			m_cameraCenter.x += .5F;
-			break;
-		}
-	}
-	
+	if (key == GLFW_KEY_ESCAPE) glfwDestroyWindow(window);
 	if (action != GLFW_PRESS || cube.GetIsRotating()) return;
 
     auto d = ((mods && GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT) ? Direction::CounterClockwise : Direction::Clockwise;
@@ -99,6 +78,35 @@ void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	}
 }
 
+void OnMouseMove(GLFWwindow* window, double xPos, double yPos) {
+	if (!m_mouseDidMove)
+    {
+        m_cameraPreviousX = xPos;
+        m_cameraPreviousY = yPos;
+        m_mouseDidMove = true;
+    }
+	
+	float xOffset = xPos - m_cameraPreviousX;
+    float yOffset = m_cameraPreviousY - yPos;
+    m_cameraPreviousX = xPos;
+    m_cameraPreviousY = yPos;
+
+    xOffset *= m_cameraSensitivity;
+    yOffset *= m_cameraSensitivity;
+
+    m_cameraYaw += xOffset;
+    m_cameraPitch += yOffset;
+
+    if (m_cameraPitch > 89.F) m_cameraPitch = 89.F;
+    if (m_cameraPitch < -89.F) m_cameraPitch = -89.F;
+
+    glm::vec3 front;
+    front.x = cos(glm::radians(m_cameraYaw)) * cos(glm::radians(m_cameraPitch));
+    front.y = sin(glm::radians(m_cameraPitch));
+    front.z = sin(glm::radians(m_cameraYaw)) * cos(glm::radians(m_cameraPitch));
+    m_cameraFront = glm::normalize(front);
+}
+
 OpenGlWindow::OpenGlWindow(const std::string& title, unsigned int width, unsigned int height)
     :m_title(title), m_width(width), m_height(height), m_window(nullptr) {
 
@@ -127,6 +135,7 @@ OpenGlWindow::OpenGlWindow(const std::string& title, unsigned int width, unsigne
 	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 
     glfwSetKeyCallback(m_window, OnKey);
+	glfwSetCursorPosCallback(m_window, OnMouseMove);
 
     glClearColor(0.F, 0.F, 0.F, 1.F);
 }
@@ -141,6 +150,25 @@ std::string OpenGlWindow::GetTitle() const {
 
 unsigned int OpenGlWindow::GetWidth() const {
     return m_width;
+}
+
+void OpenGlWindow::ProcessInput(GLFWwindow* window) {
+	float cameraSpeed = .25F;
+
+	if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) {
+		cameraSpeed = .1F;
+	} else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+		cameraSpeed = .5F;
+	}
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        m_cameraPosition += cameraSpeed * m_cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        m_cameraPosition -= cameraSpeed * m_cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        m_cameraPosition -= glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * cameraSpeed;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        m_cameraPosition += glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * cameraSpeed;
 }
 
 void OpenGlWindow::Show() {
@@ -160,6 +188,7 @@ void OpenGlWindow::Show() {
     glm::mat4 projection = glm::perspective(glm::radians(55.F), aspectRatio, .1F, 100.F);
     program.SetProjectionMatrix(projection);
 
+	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glEnable(GL_DEPTH_TEST);
 
     DirectionalLight dirLight;
@@ -171,15 +200,18 @@ void OpenGlWindow::Show() {
     program.SetDirectionalLight(dirLight);
 
     while (!glfwWindowShouldClose(m_window)) {
+		ProcessInput(m_window);
+		
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		glm::mat4 camera = glm::lookAt(m_cameraPosition, m_cameraPosition + m_cameraFront, m_cameraUp);
+		// glm::mat4 camera = glm::lookAt(m_cameraPosition, m_cameraCenter, glm::vec3(0.F, 1.F, 0.F));
+		program.SetViewMatrix(camera);
 
         cube.Draw();
 
         glfwSwapBuffers(m_window);
         glfwPollEvents();
-
-		glm::mat4 camera = glm::lookAt(m_cameraPosition, m_cameraCenter, glm::vec3(0.F, 1.F, 0.F));
-		program.SetViewMatrix(camera);
     }
 
     glfwTerminate();

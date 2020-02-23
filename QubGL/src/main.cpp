@@ -5,8 +5,6 @@
 #include "Rendering/WindowFactory.hpp"
 
 int main(void) {
-    std::cout << "Hello World!" << std::endl;
-
     Window* window = WindowFactory::CreateWindow("QubGL - Jonas tinkt", 1920, 1080);
     window->Show();
 

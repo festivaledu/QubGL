@@ -11,6 +11,7 @@ public:
     virtual unsigned int GetHeight() const override;
     virtual std::string GetTitle() const override;
     virtual unsigned int GetWidth() const override;
+	virtual void OpenGlWindow::ProcessInput(GLFWwindow* window);
     virtual void Show() override;
 
 private:
