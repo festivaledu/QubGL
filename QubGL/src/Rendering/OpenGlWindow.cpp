@@ -11,15 +11,25 @@
 #include "Model.hpp"
 #include "ShaderProgram.hpp"
 
+glm::vec3 m_cameraPosition   = glm::vec3(0.F, 0.F,  5.F);
+glm::vec3 m_cameraFront = glm::vec3(0.F, 0.F, -1.F);
+glm::vec3 m_cameraUp    = glm::vec3(0.F, 1.F,  0.F);
+
+bool m_mouseDidMove = false;
+float m_cameraSensitivity = .15F;
+float m_cameraYaw = -90.F;
+float m_cameraPitch = 0.F;
+float m_cameraPreviousX = 800.F / 2.F;
+float m_cameraPreviousY = 600.F / 2.F;
+float m_cameraFieldOfView = 45.F;
+
 Cube cube(nullptr);
 
 void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    if (action != GLFW_PRESS) return;
-    if (cube.GetIsRotating()) return;
+	if (key == GLFW_KEY_ESCAPE) glfwDestroyWindow(window);
+	if (action != GLFW_PRESS || cube.GetIsRotating()) return;
 
-    auto d = Direction::Clockwise;
-
-    if ((mods && GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT) d = Direction::CounterClockwise;
+    auto d = ((mods && GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT) ? Direction::CounterClockwise : Direction::Clockwise;
 
     if (key == GLFW_KEY_B) {
         cube.Rotate(Side::Back, d);
@@ -34,6 +44,67 @@ void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
     } else if (key == GLFW_KEY_U) {
         cube.Rotate(Side::Bottom, d);
     }
+
+	switch (key) {
+	/// Note: https://developer.valvesoftware.com/w/images/6/6c/Hammer_Axis_visual_guide.png
+	// Cube controls
+	case GLFW_KEY_KP_8:
+		cube.Rotate(Axis::Y, Direction::Clockwise);
+		break;
+	case GLFW_KEY_KP_2:
+		cube.Rotate(Axis::Y, Direction::CounterClockwise);
+		break;
+	case GLFW_KEY_KP_4:
+		cube.Rotate(Axis::Z, Direction::Clockwise);
+		break;
+	case GLFW_KEY_KP_6:
+		cube.Rotate(Axis::Z, Direction::CounterClockwise);
+		break;
+
+	// Cube section controls
+	case GLFW_KEY_KP_7:
+		cube.Rotate(Side::Left, Direction::Clockwise);
+		break;
+	case GLFW_KEY_KP_1:
+		cube.Rotate(Side::Left, Direction::CounterClockwise);
+		break;
+	case GLFW_KEY_KP_9:
+		cube.Rotate(Side::Right, Direction::Clockwise);
+		break;
+	case GLFW_KEY_KP_3:
+		cube.Rotate(Side::Right, Direction::CounterClockwise);
+		break;
+	default: break;
+	}
+}
+
+void OnMouseMove(GLFWwindow* window, double xPos, double yPos) {
+	if (!m_mouseDidMove)
+    {
+        m_cameraPreviousX = xPos;
+        m_cameraPreviousY = yPos;
+        m_mouseDidMove = true;
+    }
+	
+	float xOffset = xPos - m_cameraPreviousX;
+    float yOffset = m_cameraPreviousY - yPos;
+    m_cameraPreviousX = xPos;
+    m_cameraPreviousY = yPos;
+
+    xOffset *= m_cameraSensitivity;
+    yOffset *= m_cameraSensitivity;
+
+    m_cameraYaw += xOffset;
+    m_cameraPitch += yOffset;
+
+    if (m_cameraPitch > 89.F) m_cameraPitch = 89.F;
+    if (m_cameraPitch < -89.F) m_cameraPitch = -89.F;
+
+    glm::vec3 front;
+    front.x = cos(glm::radians(m_cameraYaw)) * cos(glm::radians(m_cameraPitch));
+    front.y = sin(glm::radians(m_cameraPitch));
+    front.z = sin(glm::radians(m_cameraYaw)) * cos(glm::radians(m_cameraPitch));
+    m_cameraFront = glm::normalize(front);
 }
 
 OpenGlWindow::OpenGlWindow(const std::string& title, unsigned int width, unsigned int height)
@@ -61,8 +132,10 @@ OpenGlWindow::OpenGlWindow(const std::string& title, unsigned int width, unsigne
 
     std::cout << "Open GL Version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
+	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 
     glfwSetKeyCallback(m_window, OnKey);
+	glfwSetCursorPosCallback(m_window, OnMouseMove);
 
     glClearColor(0.F, 0.F, 0.F, 1.F);
 }
@@ -77,6 +150,25 @@ std::string OpenGlWindow::GetTitle() const {
 
 unsigned int OpenGlWindow::GetWidth() const {
     return m_width;
+}
+
+void OpenGlWindow::ProcessInput(GLFWwindow* window) {
+	float cameraSpeed = .25F;
+
+	if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) {
+		cameraSpeed = .1F;
+	} else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+		cameraSpeed = .5F;
+	}
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        m_cameraPosition += cameraSpeed * m_cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        m_cameraPosition -= cameraSpeed * m_cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        m_cameraPosition -= glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * cameraSpeed;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        m_cameraPosition += glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * cameraSpeed;
 }
 
 void OpenGlWindow::Show() {
@@ -96,9 +188,7 @@ void OpenGlWindow::Show() {
     glm::mat4 projection = glm::perspective(glm::radians(55.F), aspectRatio, .1F, 100.F);
     program.SetProjectionMatrix(projection);
 
-    glm::mat4 camera = glm::lookAt(glm::vec3(0.F, 0.F, 5.F), glm::vec3(0.F, 0.F, -1.F), glm::vec3(0.F, 1.F, 0.F));
-    program.SetViewMatrix(camera);
-
+	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glEnable(GL_DEPTH_TEST);
 
     DirectionalLight dirLight;
@@ -109,16 +199,14 @@ void OpenGlWindow::Show() {
 
     program.SetDirectionalLight(dirLight);
 
-    auto angle = 0.F;
-
     while (!glfwWindowShouldClose(m_window)) {
-        angle += .05F;
-
-        if (angle > 360) {
-            angle = 0;
-        }
-
+		ProcessInput(m_window);
+		
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		glm::mat4 camera = glm::lookAt(m_cameraPosition, m_cameraPosition + m_cameraFront, m_cameraUp);
+		// glm::mat4 camera = glm::lookAt(m_cameraPosition, m_cameraCenter, glm::vec3(0.F, 1.F, 0.F));
+		program.SetViewMatrix(camera);
 
         cube.Draw();
 
