@@ -5,6 +5,7 @@
 
 Model::Model(const Mesh& mesh)
     :m_mesh(mesh) {
+    Colors = glm::vec3(0.F);
     Position = glm::vec3(0.F);
 }
 
