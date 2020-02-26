@@ -20,7 +20,7 @@ Cube::Cube(const ShaderProgram* shader)
 
 void Cube::Draw() {
 	if ((m_rotateSide != Side::None || m_rotateAxis != Axis::None) && a != m_rotateAngle) {
-		a += (m_rotateDirection == Direction::Clockwise) ? -1.F : 1.F;
+		a += (m_rotateDirection == Direction::Clockwise) ? -2.F : 2.F;
 
         if (a > 360.F) a = 0.F;
         if (a < 0.F) a = 360.F;
@@ -229,7 +229,7 @@ void Cube::GenerateModels(const Mesh mesh) {
 
                 auto& transform = model.GetTransform();
 
-                transform.SetScale(.4F, .4F, .4F);
+                transform.SetScale(.5F, .5F, .5F);
                 transform.SetTranslation(c, l, r);
 
                 if (l == 1 && c == -1 && r == 1) {
