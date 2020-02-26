@@ -115,7 +115,7 @@ void ShaderProgram::SetDirectionalLight(DirectionalLight dirLight) {
     glUniform4fv(diffuseId, 1, &dirLight.Diffuse[0]);
 
     auto directionId = glGetUniformLocation(m_programId, "dirLight.direction");
-    glUniform4fv(directionId, 1, &dirLight.Direction[0]);
+    glUniform3fv(directionId, 1, &dirLight.Direction[0]);
 }
 
 void ShaderProgram::SetModelMatrix(Model& model) const {
