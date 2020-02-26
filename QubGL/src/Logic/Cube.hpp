@@ -44,6 +44,7 @@ private:
     glm::mat3 RotateY(const float angle);
     glm::mat3 RotateZ(const float angle);
 
+	double m_animationStartAngle = 0;
     bool m_isRotating = false;
     std::list<Model> m_models;
     std::vector<Model*> m_pointers;

@@ -11,7 +11,10 @@
 #include "../Rendering/Mesh.hpp"
 #include "../Rendering/ShaderProgram.hpp"
 
+#include "../Libraries/easing.h"
+
 auto a = 0.F;
+auto iteration = 0;
 
 Cube::Cube(const ShaderProgram* shader)
     :m_shader(shader) {
@@ -20,6 +23,8 @@ Cube::Cube(const ShaderProgram* shader)
 
 void Cube::Draw() {
 	if ((m_rotateSide != Side::None) && a != m_rotateAngle) {
+		a = easeOutCubic(iteration, m_animationStartAngle, m_rotateAngle, 30);
+		iteration++;
 	
 		for (auto p : GetSide(m_rotateSide)) {
 			auto& tf = p->GetTransform();
@@ -144,6 +149,8 @@ void Cube::FinishRotate() {
 
     m_isRotating = false;
     m_rotateSide = Side::None;
+
+	iteration = 0;
 
     /*for (auto p : pointers) {
         auto& tf = p->GetTransform();
@@ -278,9 +285,8 @@ void Cube::Rotate(Side side, Direction direction) {
         a = 0.F;
     }
 
+	m_animationStartAngle = a;
     m_rotateAngle = a + (int)direction;
-    if (m_rotateAngle < 0) m_rotateAngle += 360.F;
-    if (m_rotateAngle >= 360.F) m_rotateAngle -= 360.F;
 
     m_rotateDirection = direction;
     m_rotateSide = side;

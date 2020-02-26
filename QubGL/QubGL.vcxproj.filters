@@ -38,6 +38,9 @@
     <ClCompile Include="src\Logic\Cube.cpp">
       <Filter>Logic</Filter>
     </ClCompile>
+    <ClCompile Include="src\Libraries\easing.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Rendering">
@@ -48,6 +51,9 @@
     </Filter>
     <Filter Include="Logic">
       <UniqueIdentifier>{8dd958c8-72a2-464d-ae00-f6fa502a7ab6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries">
+      <UniqueIdentifier>{2c20e9a6-36c5-4bf8-b47a-effd6b3a8830}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -107,6 +113,9 @@
     </ClInclude>
     <ClInclude Include="src\Logic\Cube.hpp">
       <Filter>Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Libraries\easing.h">
+      <Filter>Libraries</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

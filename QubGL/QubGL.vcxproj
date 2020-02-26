@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Libraries\easing.cpp" />
     <ClCompile Include="src\Logic\Cube.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Rendering\Mesh.cpp" />
@@ -26,6 +27,7 @@
     <ClCompile Include="src\Rendering\WindowFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Libraries\easing.h" />
     <ClInclude Include="src\Logic\Cube.hpp" />
     <ClInclude Include="src\Rendering\Color.hpp" />
     <ClInclude Include="src\Rendering\Mesh.hpp" />
