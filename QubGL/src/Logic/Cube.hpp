@@ -25,14 +25,6 @@ enum class Side {
     Top,
 };
 
-/// Note: https://developer.valvesoftware.com/w/images/6/6c/Hammer_Axis_visual_guide.png
-enum class Axis {
-	None,
-	X,
-	Y,
-	Z
-};
-
 class Cube {
 public:
     Cube(const ShaderProgram* shader);
@@ -42,7 +34,6 @@ public:
     void GenerateModels(const Mesh mesh);
     bool GetIsRotating() const;
     void Rotate(Side side, Direction direction = Direction::Clockwise);
-	void Rotate(Axis axis, Direction direction = Direction::Clockwise);
     void SetShader(const ShaderProgram* shader);
 
 private:
@@ -57,7 +48,6 @@ private:
     std::list<Model> m_models;
     std::vector<Model*> m_pointers;
     float m_rotateAngle = 0.F;
-	Axis m_rotateAxis = Axis::None;
     Direction m_rotateDirection = Direction::Clockwise;
     Side m_rotateSide = Side::None;
     const ShaderProgram* m_shader;

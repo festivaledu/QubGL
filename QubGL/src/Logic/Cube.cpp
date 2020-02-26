@@ -19,72 +19,38 @@ Cube::Cube(const ShaderProgram* shader)
 }
 
 void Cube::Draw() {
-	if ((m_rotateSide != Side::None || m_rotateAxis != Axis::None) && a != m_rotateAngle) {
-		a += (m_rotateDirection == Direction::Clockwise) ? -2.F : 2.F;
-
-        if (a > 360.F) a = 0.F;
-        if (a < 0.F) a = 360.F;
+	if ((m_rotateSide != Side::None) && a != m_rotateAngle) {
 	
-		if (m_rotateSide != Side::None) {
-			for (auto p : GetSide(m_rotateSide)) {
-				auto& tf = p->GetTransform();
-				auto r = tf.GetRotation();
+		for (auto p : GetSide(m_rotateSide)) {
+			auto& tf = p->GetTransform();
+			auto r = tf.GetRotation();
 
-				glm::vec3 m(p->Position);
+			glm::vec3 m(p->Position);
 
-				switch (m_rotateSide) {
-				case Side::Left:
-				case Side::Right:
-					tf.SetRotation(a, r.y, r.z);
-					m = glm::vec3(p->Position) * RotateX(glm::radians(a));
-					break;
-				case Side::Bottom:
-				case Side::Top:
-					tf.SetRotation(r.x, a, r.z);
-					m = glm::vec3(p->Position) * RotateY(glm::radians(a));
-					break;
-				case Side::Back:
-				case Side::Front:
-					tf.SetRotation(r.x, r.y, a);
-					m = glm::vec3(p->Position) * RotateZ(glm::radians(a));
-					break;
-				default:
-					a = 0.F;
-				}
-
-				tf.SetTranslation(m.x, m.y, m.z);
+			switch (m_rotateSide) {
+			case Side::Left:
+			case Side::Right:
+				tf.SetRotation(a, r.y, r.z);
+				m = glm::vec3(p->Position) * RotateX(glm::radians(a));
+				break;
+			case Side::Bottom:
+			case Side::Top:
+				tf.SetRotation(r.x, a, r.z);
+				m = glm::vec3(p->Position) * RotateY(glm::radians(a));
+				break;
+			case Side::Back:
+			case Side::Front:
+				tf.SetRotation(r.x, r.y, a);
+				m = glm::vec3(p->Position) * RotateZ(glm::radians(a));
+				break;
+			default:
+				a = 0.F;
 			}
 
-			FinishRotate();
-		} else if (m_rotateAxis != Axis::None) {
-			for (auto p : m_pointers) {
-				auto& tf = p->GetTransform();
-				auto r = tf.GetRotation();
-
-				glm::vec3 m(p->Position);
-				
-				switch (m_rotateAxis) {
-				case Axis::Y:
-					tf.SetRotation(a, r.y, r.z);
-					m = glm::vec3(p->Position) * RotateX(glm::radians(a));
-					break;
-				case Axis::Z:
-					tf.SetRotation(r.x, a, r.z);
-					m = glm::vec3(p->Position) * RotateY(glm::radians(a));
-					break;
-				case Axis::X:
-					tf.SetRotation(r.x, r.y, a);
-					m = glm::vec3(p->Position) * RotateZ(glm::radians(a));
-					break;
-				default:
-					a = 0.F;
-				}
-
-				tf.SetTranslation(m.x, m.y, m.z);
-			}
-			
-			FinishRotate();
+			tf.SetTranslation(m.x, m.y, m.z);
 		}
+
+		FinishRotate();
 	} else {
         for (auto p : m_pointers) {
             auto& tf = p->GetTransform();
@@ -174,38 +140,9 @@ void Cube::FinishRotate() {
             auto& tf = p->GetTransform();
             tf.SetRotation(0.F, 0.F, 0.F);
         }
-    } else if (m_rotateAxis != Axis::None) {
-        float c = 0;
-
-        for (auto p : m_pointers) {
-            switch (m_rotateAxis) {
-            case Axis::X:
-                c = p->Colors.y;
-                p->Colors.y = p->Colors.z;
-                p->Colors.z = c;
-
-                break;
-            case Axis::Y:
-                c = p->Colors.x;
-                p->Colors.x = p->Colors.z;
-                p->Colors.z = c;
-
-                break;
-            case Axis::Z:
-                c = p->Colors.x;
-                p->Colors.x = p->Colors.y;
-                p->Colors.y = c;
-
-                break;
-            }
-
-            auto& tf = p->GetTransform();
-            tf.SetRotation(0.F, 0.F, 0.F);
-        }
     }
 
     m_isRotating = false;
-	m_rotateAxis = Axis::None;
     m_rotateSide = Side::None;
 
     /*for (auto p : pointers) {
@@ -347,34 +284,6 @@ void Cube::Rotate(Side side, Direction direction) {
 
     m_rotateDirection = direction;
     m_rotateSide = side;
-    m_isRotating = true;
-}
-
-void Cube::Rotate(Axis axis, Direction direction) {
-	if (axis == Axis::None) return;
-	
-	auto rotation = m_pointers.front()->GetTransform().GetRotation();
-	
-	switch (axis) {
-    case Axis::Y:
-        a = rotation.x;
-        break;
-    case Axis::Z:
-        a = rotation.y;
-        break;
-    case Axis::X:
-        a = rotation.z;
-        break;
-    default:
-        a = 0.F;
-    }
-	
-	m_rotateAngle = a + (int)direction;
-    if (m_rotateAngle < 0) m_rotateAngle += 360.F;
-    if (m_rotateAngle >= 360.F) m_rotateAngle -= 360.F;
-
-    m_rotateDirection = direction;
-    m_rotateAxis = axis;
     m_isRotating = true;
 }
 
