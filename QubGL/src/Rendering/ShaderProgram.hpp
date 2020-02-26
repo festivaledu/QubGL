@@ -11,6 +11,7 @@ public:
     ShaderProgram(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath);
 
     void Bind() const;
+    void SetColorOverrides(Model& model) const;
     void SetDirectionalLight(struct DirectionalLight dirLight);
     void SetModelMatrix(Model& model) const;
     void SetProjectionMatrix(const glm::mat4& projectionMatrix);

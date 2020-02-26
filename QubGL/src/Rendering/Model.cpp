@@ -5,6 +5,7 @@
 
 Model::Model(const Mesh& mesh)
     :m_mesh(mesh) {
+    Colors = glm::vec3(0.F);
     Position = glm::vec3(0.F);
 }
 
@@ -12,6 +13,7 @@ Model::~Model() { }
 
 void Model::Draw(const ShaderProgram& shader) {
     shader.Bind();
+    shader.SetColorOverrides(*this);
     shader.SetModelMatrix(*this);
     m_mesh.Draw();
 }

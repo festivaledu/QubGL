@@ -45,37 +45,39 @@ void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
         cube.Rotate(Side::Bottom, d);
     }
 
-	switch (key) {
-	/// Note: https://developer.valvesoftware.com/w/images/6/6c/Hammer_Axis_visual_guide.png
-	// Cube controls
-	case GLFW_KEY_KP_8:
-		cube.Rotate(Axis::Y, Direction::Clockwise);
-		break;
-	case GLFW_KEY_KP_2:
-		cube.Rotate(Axis::Y, Direction::CounterClockwise);
-		break;
-	case GLFW_KEY_KP_4:
-		cube.Rotate(Axis::Z, Direction::Clockwise);
-		break;
-	case GLFW_KEY_KP_6:
-		cube.Rotate(Axis::Z, Direction::CounterClockwise);
-		break;
+    // Only disabled for now. Whole cube rotation should be removed entirely tho because it breaks the 1st law of cube colorism
 
-	// Cube section controls
-	case GLFW_KEY_KP_7:
-		cube.Rotate(Side::Left, Direction::Clockwise);
-		break;
-	case GLFW_KEY_KP_1:
-		cube.Rotate(Side::Left, Direction::CounterClockwise);
-		break;
-	case GLFW_KEY_KP_9:
-		cube.Rotate(Side::Right, Direction::Clockwise);
-		break;
-	case GLFW_KEY_KP_3:
-		cube.Rotate(Side::Right, Direction::CounterClockwise);
-		break;
-	default: break;
-	}
+	//switch (key) {
+	///// Note: https://developer.valvesoftware.com/w/images/6/6c/Hammer_Axis_visual_guide.png
+	//// Cube controls
+	//case GLFW_KEY_KP_8:
+	//	cube.Rotate(Axis::Y, Direction::Clockwise);
+	//	break;
+	//case GLFW_KEY_KP_2:
+	//	cube.Rotate(Axis::Y, Direction::CounterClockwise);
+	//	break;
+	//case GLFW_KEY_KP_4:
+	//	cube.Rotate(Axis::Z, Direction::Clockwise);
+	//	break;
+	//case GLFW_KEY_KP_6:
+	//	cube.Rotate(Axis::Z, Direction::CounterClockwise);
+	//	break;
+
+	//// Cube section controls
+	//case GLFW_KEY_KP_7:
+	//	cube.Rotate(Side::Left, Direction::Clockwise);
+	//	break;
+	//case GLFW_KEY_KP_1:
+	//	cube.Rotate(Side::Left, Direction::CounterClockwise);
+	//	break;
+	//case GLFW_KEY_KP_9:
+	//	cube.Rotate(Side::Right, Direction::Clockwise);
+	//	break;
+	//case GLFW_KEY_KP_3:
+	//	cube.Rotate(Side::Right, Direction::CounterClockwise);
+	//	break;
+	//default: break;
+	//}
 }
 
 void OnMouseMove(GLFWwindow* window, double xPos, double yPos) {

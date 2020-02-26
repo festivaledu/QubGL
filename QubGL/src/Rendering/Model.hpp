@@ -14,7 +14,7 @@ public:
     void Draw(const class ShaderProgram& shader);
     Transform& GetTransform();
 
-    std::vector<int> Colors;
+    glm::vec3 Colors;
     glm::vec3 Position;
 
 private:

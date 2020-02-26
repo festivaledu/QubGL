@@ -20,7 +20,7 @@ Cube::Cube(const ShaderProgram* shader)
 
 void Cube::Draw() {
 	if ((m_rotateSide != Side::None || m_rotateAxis != Axis::None) && a != m_rotateAngle) {
-		a += (m_rotateDirection == Direction::Clockwise) ? -1.F : 1.F;
+		a += (m_rotateDirection == Direction::Clockwise) ? -2.F : 2.F;
 
         if (a > 360.F) a = 0.F;
         if (a < 0.F) a = 360.F;
@@ -103,89 +103,115 @@ std::vector<int> colors = { 42, 41, 44, 43, 47, 103 };
 void Cube::FinishRotate() {
     if (a != m_rotateAngle) return;
 
-    auto pointers = GetSide(m_rotateSide);
+    if (m_rotateSide != Side::None) {
+        auto pointers = GetSide(m_rotateSide);
 
-    std::cout << std::endl << sides[(int)m_rotateSide] << " gedreht " << (m_rotateDirection == Direction::Clockwise ? "im" : "gegen den") << " Uhrzeigersinn" << std::endl;
+        //std::cout << std::endl << sides[(int)m_rotateSide] << " gedreht " << (m_rotateDirection == Direction::Clockwise ? "im" : "gegen den") << " Uhrzeigersinn" << std::endl;
 
-    for (auto p : pointers) {
-        for (auto c : p->Colors) {
-            // std::cout << colors[c] << " ";
-            std::cout << "\x1B[" + std::to_string(colors[c]) + "m   \033[0m";
+        for (auto p : pointers) {
+            //std::cout << "\x1B[" + std::to_string(colors[c]) + "m   \033[0m";
+
+            //std::cout << std::endl << "(X: " << p->Position.x << " | Y: " << p->Position.y << " | Z: " << p->Position.z << " )" << std::endl;
+
+            float c = 0;
+
+            switch (m_rotateSide) {
+            case Side::Left:
+            case Side::Right:
+                if (m_rotateDirection == Direction::Clockwise) {
+                    auto y = p->Position.y;
+                    p->Position.y = p->Position.z;
+                    p->Position.z = (y * -1) + 0.F;
+                } else {
+                    auto z = p->Position.z;
+                    p->Position.z = p->Position.y;
+                    p->Position.y = (z * -1) + 0.F;
+                }
+
+                c = p->Colors.y;
+                p->Colors.y = p->Colors.z;
+                p->Colors.z = c;
+
+                break;
+            case Side::Bottom:
+            case Side::Top:
+                if (m_rotateDirection == Direction::Clockwise) {
+                    auto z = p->Position.z;
+                    p->Position.z = p->Position.x;
+                    p->Position.x = (z * -1) + 0.F;
+                } else {
+                    auto x = p->Position.x;
+                    p->Position.x = p->Position.z;
+                    p->Position.z = (x * -1) + 0.F;
+                }
+
+                c = p->Colors.x;
+                p->Colors.x = p->Colors.z;
+                p->Colors.z = c;
+
+                break;
+            case Side::Back:
+            case Side::Front:
+                if (m_rotateDirection == Direction::Clockwise) {
+                    auto x = p->Position.x;
+                    p->Position.x = p->Position.y;
+                    p->Position.y = (x * -1) + 0.F;
+                } else {
+                    auto y = p->Position.y;
+                    p->Position.y = p->Position.x;
+                    p->Position.x = (y * -1) + 0.F;
+                }
+
+                c = p->Colors.x;
+                p->Colors.x = p->Colors.y;
+                p->Colors.y = c;
+
+                break;
+            }
+
+            //std::cout << "(X: " << p->Position.x << " | Y: " << p->Position.y << " | Z: " << p->Position.z << " )" << std::endl;
+
+            auto& tf = p->GetTransform();
+            tf.SetRotation(0.F, 0.F, 0.F);
         }
+    } else if (m_rotateAxis != Axis::None) {
+        float c = 0;
 
-        std::cout << std::endl << "(X: " << p->Position.x << " | Y: " << p->Position.y << " | Z: " << p->Position.z << " )" << std::endl;
+        for (auto p : m_pointers) {
+            switch (m_rotateAxis) {
+            case Axis::X:
+                c = p->Colors.y;
+                p->Colors.y = p->Colors.z;
+                p->Colors.z = c;
 
-        /*if ((m_rotateDirection == Direction::Clockwise && m_rotateSide == Side::Left) || (m_rotateDirection == Direction::CounterClockwise && m_rotateSide == Side::Right)) {
-            auto z = p->Position.z;
-            p->Position.z = p->Position.y;
-            p->Position.y = z * -1;
-        } else if ((m_rotateDirection == Direction::CounterClockwise && m_rotateSide == Side::Left) || (m_rotateDirection == Direction::Clockwise && m_rotateSide == Side::Right)) {
-            auto y = p->Position.y;
-            p->Position.y = p->Position.z;
-            p->Position.z = y * -1;
-        } else if ((m_rotateDirection == Direction::Clockwise && m_rotateSide == Side::Bottom) || (m_rotateDirection == Direction::CounterClockwise && m_rotateSide == Side::Top)) {
-            auto x = p->Position.x;
-            p->Position.x = p->Position.z;
-            p->Position.z = x * -1;
-        } else if ((m_rotateDirection == Direction::CounterClockwise && m_rotateSide == Side::Bottom) || (m_rotateDirection == Direction::Clockwise && m_rotateSide == Side::Top)) {
-            auto z = p->Position.z;
-            p->Position.z = p->Position.x;
-            p->Position.x = z * -1;
-        } else if ((m_rotateDirection == Direction::Clockwise && m_rotateSide == Side::Back) || (m_rotateDirection == Direction::CounterClockwise && m_rotateSide == Side::Front)) {
-            auto y = p->Position.y;
-            p->Position.y = p->Position.x;
-            p->Position.x = y * -1;
-        } else if ((m_rotateDirection == Direction::CounterClockwise && m_rotateSide == Side::Back) || (m_rotateDirection == Direction::Clockwise && m_rotateSide == Side::Front)) {
-            auto x = p->Position.x;
-            p->Position.x = p->Position.y;
-            p->Position.y = x * -1;
-        }*/
+                break;
+            case Axis::Y:
+                c = p->Colors.x;
+                p->Colors.x = p->Colors.z;
+                p->Colors.z = c;
 
-        switch (m_rotateSide) {
-        case Side::Left:
-        case Side::Right:
-            if (m_rotateDirection == Direction::Clockwise) {
-                auto y = p->Position.y;
-                p->Position.y = p->Position.z;
-                p->Position.z = (y * -1) + 0.F;
-            } else {
-                auto z = p->Position.z;
-                p->Position.z = p->Position.y;
-                p->Position.y = (z * -1) + 0.F;
+                break;
+            case Axis::Z:
+                c = p->Colors.x;
+                p->Colors.x = p->Colors.y;
+                p->Colors.y = c;
+
+                break;
             }
-            break;
-        case Side::Bottom:
-        case Side::Top:
-            if (m_rotateDirection == Direction::Clockwise) {
-                auto z = p->Position.z;
-                p->Position.z = p->Position.x;
-                p->Position.x = (z * -1) + 0.F;
-            } else {
-                auto x = p->Position.x;
-                p->Position.x = p->Position.z;
-                p->Position.z = (x * -1) + 0.F;
-            }
-            break;
-        case Side::Back:
-        case Side::Front:
-            if (m_rotateDirection == Direction::Clockwise) {
-                auto x = p->Position.x;
-                p->Position.x = p->Position.y;
-                p->Position.y = (x * -1) + 0.F;
-            } else {
-                auto y = p->Position.y;
-                p->Position.y = p->Position.x;
-                p->Position.x = (y * -1) + 0.F;
-            }
-            break;
+
+            auto& tf = p->GetTransform();
+            tf.SetRotation(0.F, 0.F, 0.F);
         }
-
-        std::cout << "(X: " << p->Position.x << " | Y: " << p->Position.y << " | Z: " << p->Position.z << " )" << std::endl;
     }
 
     m_isRotating = false;
 	m_rotateAxis = Axis::None;
     m_rotateSide = Side::None;
+
+    /*for (auto p : pointers) {
+        auto& tf = p->GetTransform();
+        tf.SetRotation(0.F, 0.F, 0.F);
+    }*/
 }
 
 void Cube::GenerateModels(const Mesh mesh) {
@@ -203,7 +229,7 @@ void Cube::GenerateModels(const Mesh mesh) {
 
                 auto& transform = model.GetTransform();
 
-                transform.SetScale(.4F, .4F, .4F);
+                transform.SetScale(.5F, .5F, .5F);
                 transform.SetTranslation(c, l, r);
 
                 if (l == 1 && c == -1 && r == 1) {
@@ -220,40 +246,40 @@ void Cube::GenerateModels(const Mesh mesh) {
 }
 
 void Cube::GenerateSides() {
-    m_pointers[0]->Colors = { Color::Blue, Color::Orange, Color::White };
-    m_pointers[1]->Colors = { Color::Orange, Color::White };
-    m_pointers[2]->Colors = { Color::Green, Color::Orange, Color::White };
+    m_pointers[0]->Colors = glm::vec3(Color::White, Color::Orange, Color::Blue);
+    m_pointers[1]->Colors = glm::vec3(Color::White, Color::Orange, -1);
+    m_pointers[2]->Colors = glm::vec3(Color::White, Color::Orange, Color::Green);
 
-    m_pointers[3]->Colors = { Color::Blue, Color::Orange };
-    m_pointers[4]->Colors = { Color::Orange };
-    m_pointers[5]->Colors = { Color::Green, Color::Orange };
+    m_pointers[3]->Colors = glm::vec3(-1, Color::Orange, Color::Blue);
+    m_pointers[4]->Colors = glm::vec3(-1, Color::Orange, -1);
+    m_pointers[5]->Colors = glm::vec3(-1, Color::Orange, Color::Green);
 
-    m_pointers[6]->Colors = { Color::Blue, Color::Orange, Color::Yellow };
-    m_pointers[7]->Colors = { Color::Orange, Color::Yellow };
-    m_pointers[8]->Colors = { Color::Green, Color::Orange, Color::Yellow };
+    m_pointers[6]->Colors = glm::vec3(Color::Yellow, Color::Orange, Color::Blue);
+    m_pointers[7]->Colors = glm::vec3(Color::Yellow, Color::Orange, -1);
+    m_pointers[8]->Colors = glm::vec3(Color::Yellow, Color::Orange, Color::Green);
 
-    m_pointers[9]->Colors = { Color::Blue, Color::White };
-    m_pointers[10]->Colors = { Color::White };
-    m_pointers[11]->Colors = { Color::Green, Color::White };
+    m_pointers[9]->Colors = glm::vec3(Color::White, -1, Color::Blue);
+    m_pointers[10]->Colors = glm::vec3(Color::White, -1, -1);
+    m_pointers[11]->Colors = glm::vec3(Color::White, -1, Color::Green);
 
-    m_pointers[12]->Colors = { Color::Blue };
-    m_pointers[13]->Colors = { Color::Green };
+    m_pointers[12]->Colors = glm::vec3(-1, -1, Color::Blue);
+    m_pointers[13]->Colors = glm::vec3(-1, -1, Color::Green);
 
-    m_pointers[14]->Colors = { Color::Blue, Color::Yellow };
-    m_pointers[15]->Colors = { Color::Yellow };
-    m_pointers[16]->Colors = { Color::Green, Color::Yellow };
+    m_pointers[14]->Colors = glm::vec3(Color::Yellow, -1, Color::Blue);
+    m_pointers[15]->Colors = glm::vec3(Color::Yellow, -1, -1);
+    m_pointers[16]->Colors = glm::vec3(Color::Yellow, -1, Color::Green);
 
-    m_pointers[17]->Colors = { Color::Red, Color::Blue, Color::White };
-    m_pointers[18]->Colors = { Color::Red, Color::White };
-    m_pointers[19]->Colors = { Color::Red, Color::Green, Color::White };
+    m_pointers[17]->Colors = glm::vec3(Color::White, Color::Red, Color::Blue);
+    m_pointers[18]->Colors = glm::vec3(Color::White, Color::Red, -1);
+    m_pointers[19]->Colors = glm::vec3(Color::White, Color::Red, Color::Green);
 
-    m_pointers[20]->Colors = { Color::Red, Color::Blue };
-    m_pointers[21]->Colors = { Color::Red };
-    m_pointers[22]->Colors = { Color::Green, Color::Red };
+    m_pointers[20]->Colors = glm::vec3(-1, Color::Red, Color::Blue);
+    m_pointers[21]->Colors = glm::vec3(-1, Color::Red, -1);
+    m_pointers[22]->Colors = glm::vec3(-1, Color::Red, Color::Green);
 
-    m_pointers[23]->Colors = { Color::Red, Color::Blue, Color::Yellow };
-    m_pointers[24]->Colors = { Color::Red, Color::Yellow };
-    m_pointers[25]->Colors = { Color::Green, Color::Red, Color::Yellow };
+    m_pointers[23]->Colors = glm::vec3(Color::Yellow, Color::Red, Color::Blue);
+    m_pointers[24]->Colors = glm::vec3(Color::Yellow, Color::Red, -1);
+    m_pointers[25]->Colors = glm::vec3(Color::Yellow, Color::Red, Color::Green);
 }
 
 bool Cube::GetIsRotating() const {
