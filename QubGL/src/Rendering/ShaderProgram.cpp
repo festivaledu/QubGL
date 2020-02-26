@@ -13,6 +13,15 @@
 
 using namespace std;
 
+static glm::vec4 colors[] = {
+    glm::vec4(0.F, .6F, .28F, 1.F), // Green
+    glm::vec4(.725F, 0.F, 0.F, 1.F), // Red
+    glm::vec4(0.F, .27F, .678F, 1.F), // Blue
+    glm::vec4(1.F, .349F, 0.F, 1.F), // Orange
+    glm::vec4(1.F), // White
+    glm::vec4(1.F, .835F, 0.F, 1.F), // Yellow
+};
+
 ShaderProgram::ShaderProgram(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath) {
     auto vertexSource = ParseFile(vertexShaderFilePath);
     auto fragmentSource = ParseFile(fragmentShaderFilePath);
@@ -105,6 +114,32 @@ string ShaderProgram::ParseFile(const string& shaderFilePath) {
     }
 
     return ss.str();
+}
+
+void ShaderProgram::SetColorOverrides(Model& model) const {
+    auto xOverrideId = glGetUniformLocation(m_programId, "XColorOverride");
+    auto yOverrideId = glGetUniformLocation(m_programId, "YColorOverride");
+    auto zOverrideId = glGetUniformLocation(m_programId, "ZColorOverride");
+    
+    glm::vec4 xOverride(0.F);
+    glm::vec4 yOverride(0.F);
+    glm::vec4 zOverride(0.F);
+
+    if (model.Colors.x > -1) {
+        xOverride = colors[(int)model.Colors.x];
+    }
+
+    if (model.Colors.y > -1) {
+        yOverride = colors[(int)model.Colors.y];
+    }
+
+    if (model.Colors.z > -1) {
+        zOverride = colors[(int)model.Colors.z];
+    }
+
+    glUniform4f(xOverrideId, xOverride.r, xOverride.g, xOverride.b, xOverride.a);
+    glUniform4f(yOverrideId, yOverride.r, yOverride.g, yOverride.b, yOverride.a);
+    glUniform4f(zOverrideId, zOverride.r, zOverride.g, zOverride.b, zOverride.a);
 }
 
 void ShaderProgram::SetDirectionalLight(DirectionalLight dirLight) {

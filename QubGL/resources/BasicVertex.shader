@@ -7,6 +7,10 @@ layout(location = 2) in vec3 normal;
 out vec4 FragColor;
 out vec3 FragNormal;
 
+uniform vec4 XColorOverride;
+uniform vec4 YColorOverride;
+uniform vec4 ZColorOverride;
+
 uniform mat4 ModelMatrix;
 uniform mat4 ProjectionMatrix;
 uniform mat4 ViewMatrix;
@@ -23,4 +27,16 @@ void main()
 
 	// Pass the Color to the FragmentShader.
 	FragColor = color;
+
+    if (XColorOverride.a == 1.F && ((gl_VertexID >= 3 && gl_VertexID <= 5) || (gl_VertexID >= 12 && gl_VertexID <= 14) || (gl_VertexID >= 81 && gl_VertexID <= 83) || (gl_VertexID >= 90 && gl_VertexID <= 92))) {
+        FragColor = XColorOverride;
+    }
+
+    if (YColorOverride.a == 1.F && ((gl_VertexID >= 0 && gl_VertexID <= 2) || (gl_VertexID >= 9 && gl_VertexID <= 11) || (gl_VertexID >= 78 && gl_VertexID <= 80) || (gl_VertexID >= 87 && gl_VertexID <= 89))) {
+        FragColor = YColorOverride;
+    }
+
+    if (ZColorOverride.a == 1.F && ((gl_VertexID >= 6 && gl_VertexID <= 8) || (gl_VertexID >= 75 && gl_VertexID <= 77) || (gl_VertexID >= 84 && gl_VertexID <= 86) || (gl_VertexID >= 129 && gl_VertexID <= 131))) {
+        FragColor = ZColorOverride;
+    }
 }

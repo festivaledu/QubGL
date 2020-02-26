@@ -13,6 +13,7 @@ Model::~Model() { }
 
 void Model::Draw(const ShaderProgram& shader) {
     shader.Bind();
+    shader.SetColorOverrides(*this);
     shader.SetModelMatrix(*this);
     m_mesh.Draw();
 }

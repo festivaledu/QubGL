@@ -103,82 +103,115 @@ std::vector<int> colors = { 42, 41, 44, 43, 47, 103 };
 void Cube::FinishRotate() {
     if (a != m_rotateAngle) return;
 
-    auto pointers = GetSide(m_rotateSide);
+    if (m_rotateSide != Side::None) {
+        auto pointers = GetSide(m_rotateSide);
 
-    std::cout << std::endl << sides[(int)m_rotateSide] << " gedreht " << (m_rotateDirection == Direction::Clockwise ? "im" : "gegen den") << " Uhrzeigersinn" << std::endl;
+        //std::cout << std::endl << sides[(int)m_rotateSide] << " gedreht " << (m_rotateDirection == Direction::Clockwise ? "im" : "gegen den") << " Uhrzeigersinn" << std::endl;
 
-    for (auto p : pointers) {
-        //std::cout << "\x1B[" + std::to_string(colors[c]) + "m   \033[0m";
+        for (auto p : pointers) {
+            //std::cout << "\x1B[" + std::to_string(colors[c]) + "m   \033[0m";
 
-        std::cout << std::endl << "(X: " << p->Position.x << " | Y: " << p->Position.y << " | Z: " << p->Position.z << " )" << std::endl;
+            //std::cout << std::endl << "(X: " << p->Position.x << " | Y: " << p->Position.y << " | Z: " << p->Position.z << " )" << std::endl;
 
+            float c = 0;
+
+            switch (m_rotateSide) {
+            case Side::Left:
+            case Side::Right:
+                if (m_rotateDirection == Direction::Clockwise) {
+                    auto y = p->Position.y;
+                    p->Position.y = p->Position.z;
+                    p->Position.z = (y * -1) + 0.F;
+                } else {
+                    auto z = p->Position.z;
+                    p->Position.z = p->Position.y;
+                    p->Position.y = (z * -1) + 0.F;
+                }
+
+                c = p->Colors.y;
+                p->Colors.y = p->Colors.z;
+                p->Colors.z = c;
+
+                break;
+            case Side::Bottom:
+            case Side::Top:
+                if (m_rotateDirection == Direction::Clockwise) {
+                    auto z = p->Position.z;
+                    p->Position.z = p->Position.x;
+                    p->Position.x = (z * -1) + 0.F;
+                } else {
+                    auto x = p->Position.x;
+                    p->Position.x = p->Position.z;
+                    p->Position.z = (x * -1) + 0.F;
+                }
+
+                c = p->Colors.x;
+                p->Colors.x = p->Colors.z;
+                p->Colors.z = c;
+
+                break;
+            case Side::Back:
+            case Side::Front:
+                if (m_rotateDirection == Direction::Clockwise) {
+                    auto x = p->Position.x;
+                    p->Position.x = p->Position.y;
+                    p->Position.y = (x * -1) + 0.F;
+                } else {
+                    auto y = p->Position.y;
+                    p->Position.y = p->Position.x;
+                    p->Position.x = (y * -1) + 0.F;
+                }
+
+                c = p->Colors.x;
+                p->Colors.x = p->Colors.y;
+                p->Colors.y = c;
+
+                break;
+            }
+
+            //std::cout << "(X: " << p->Position.x << " | Y: " << p->Position.y << " | Z: " << p->Position.z << " )" << std::endl;
+
+            auto& tf = p->GetTransform();
+            tf.SetRotation(0.F, 0.F, 0.F);
+        }
+    } else if (m_rotateAxis != Axis::None) {
         float c = 0;
 
-        switch (m_rotateSide) {
-        case Side::Left:
-        case Side::Right:
-            if (m_rotateDirection == Direction::Clockwise) {
-                auto y = p->Position.y;
-                p->Position.y = p->Position.z;
-                p->Position.z = (y * -1) + 0.F;
-            } else {
-                auto z = p->Position.z;
-                p->Position.z = p->Position.y;
-                p->Position.y = (z * -1) + 0.F;
+        for (auto p : m_pointers) {
+            switch (m_rotateAxis) {
+            case Axis::X:
+                c = p->Colors.y;
+                p->Colors.y = p->Colors.z;
+                p->Colors.z = c;
+
+                break;
+            case Axis::Y:
+                c = p->Colors.x;
+                p->Colors.x = p->Colors.z;
+                p->Colors.z = c;
+
+                break;
+            case Axis::Z:
+                c = p->Colors.x;
+                p->Colors.x = p->Colors.y;
+                p->Colors.y = c;
+
+                break;
             }
 
-            c = p->Colors.y;
-            p->Colors.y = p->Colors.z;
-            p->Colors.z = c;
-
-            break;
-        case Side::Bottom:
-        case Side::Top:
-            if (m_rotateDirection == Direction::Clockwise) {
-                auto z = p->Position.z;
-                p->Position.z = p->Position.x;
-                p->Position.x = (z * -1) + 0.F;
-            } else {
-                auto x = p->Position.x;
-                p->Position.x = p->Position.z;
-                p->Position.z = (x * -1) + 0.F;
-            }
-
-            c = p->Colors.x;
-            p->Colors.x = p->Colors.z;
-            p->Colors.z = c;
-
-            break;
-        case Side::Back:
-        case Side::Front:
-            if (m_rotateDirection == Direction::Clockwise) {
-                auto x = p->Position.x;
-                p->Position.x = p->Position.y;
-                p->Position.y = (x * -1) + 0.F;
-            } else {
-                auto y = p->Position.y;
-                p->Position.y = p->Position.x;
-                p->Position.x = (y * -1) + 0.F;
-            }
-
-            c = p->Colors.x;
-            p->Colors.x = p->Colors.y;
-            p->Colors.y = c;
-
-            break;
+            auto& tf = p->GetTransform();
+            tf.SetRotation(0.F, 0.F, 0.F);
         }
-
-        std::cout << "(X: " << p->Position.x << " | Y: " << p->Position.y << " | Z: " << p->Position.z << " )" << std::endl;
     }
 
     m_isRotating = false;
 	m_rotateAxis = Axis::None;
     m_rotateSide = Side::None;
 
-    for (auto p : pointers) {
+    /*for (auto p : pointers) {
         auto& tf = p->GetTransform();
         tf.SetRotation(0.F, 0.F, 0.F);
-    }
+    }*/
 }
 
 void Cube::GenerateModels(const Mesh mesh) {
