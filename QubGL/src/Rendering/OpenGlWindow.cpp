@@ -117,6 +117,7 @@ OpenGlWindow::OpenGlWindow(const std::string& title, unsigned int width, unsigne
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 
     m_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 
