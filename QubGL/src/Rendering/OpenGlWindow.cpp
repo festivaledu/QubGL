@@ -176,14 +176,21 @@ void OpenGlWindow::ProcessInput(GLFWwindow* window) {
 		cameraSpeed = .5F;
 	}
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
         m_cameraPosition += cameraSpeed * m_cameraFront;
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	}
+
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
         m_cameraPosition -= cameraSpeed * m_cameraFront;
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	}
+
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
         m_cameraPosition -= glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * cameraSpeed;
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	}
+
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
         m_cameraPosition += glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * cameraSpeed;
+	}
 }
 
 void OpenGlWindow::Show() {
