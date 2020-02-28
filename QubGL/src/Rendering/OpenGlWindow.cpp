@@ -30,6 +30,7 @@ double m_cameraYaw = -90.F;
 double m_cameraPitch = 0.F;
 double m_cameraPreviousX = 800.F / 2.F;
 double m_cameraPreviousY = 600.F / 2.F;
+float m_cameraFieldOfView = 55.F;
 
 Cube cube(nullptr);
 
@@ -71,6 +72,10 @@ void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	case GLFW_KEY_KP_6:
 	case GLFW_KEY_K:
 		cube.Rotate(Side::Right, d);
+		break;
+
+	case GLFW_KEY_R:
+		m_cameraFieldOfView = 55.F;
 		break;
 	default: break;
 	}
@@ -120,6 +125,18 @@ void OnMouseMove(GLFWwindow* window, double xPos, double yPos) {
     m_cameraFront = glm::normalize(front);
 }
 
+void OnMouseScroll(GLFWwindow* window, double xOffset, double yOffset) {
+	std::cout << yOffset << std::endl;
+	
+	m_cameraFieldOfView -= yOffset;
+	if (m_cameraFieldOfView < 0.1F) m_cameraFieldOfView = 0.1F;
+	if (m_cameraFieldOfView > 175.F) m_cameraFieldOfView = 175.F;
+
+	std::cout << m_cameraFieldOfView << std::endl;
+}
+
+
+
 OpenGlWindow::OpenGlWindow(const std::string& title, unsigned int width, unsigned int height)
     :m_title(title), m_width(width), m_height(height), m_window(nullptr) {
 
@@ -151,6 +168,7 @@ OpenGlWindow::OpenGlWindow(const std::string& title, unsigned int width, unsigne
     glfwSetKeyCallback(m_window, OnKey);
 	glfwSetCursorPosCallback(m_window, OnMouseMove);
 	glfwSetMouseButtonCallback(m_window, OnMouseKey);
+	glfwSetScrollCallback(m_window, OnMouseScroll);
 
     glClearColor(0.F, 0.F, 0.F, 1.F);
 }
@@ -207,9 +225,6 @@ void OpenGlWindow::Show() {
 
     auto aspectRatio = 1920.F / 1080.F;
 
-    glm::mat4 projection = glm::perspective(glm::radians(55.F), aspectRatio, .1F, 100.F);
-    program.SetProjectionMatrix(projection);
-
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glEnable(GL_DEPTH_TEST);
 
@@ -225,6 +240,9 @@ void OpenGlWindow::Show() {
 		ProcessInput(m_window);
 		
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glm::mat4 projection = glm::perspective(glm::radians(m_cameraFieldOfView), aspectRatio, .1F, 100.F);
+		program.SetProjectionMatrix(projection);
 		
 		glm::mat4 camera = glm::lookAt(m_cameraPosition, m_cameraPosition + m_cameraFront, m_cameraUp);
 		program.SetViewMatrix(camera);
