@@ -23,12 +23,11 @@ glm::vec3 m_cameraFront = glm::vec3(0.F, 0.F, -1.F);
 glm::vec3 m_cameraUp    = glm::vec3(0.F, 1.F,  0.F);
 
 bool m_mouseDidMove = false;
-float m_cameraSensitivity = .15F;
-float m_cameraYaw = -90.F;
-float m_cameraPitch = 0.F;
-float m_cameraPreviousX = 800.F / 2.F;
-float m_cameraPreviousY = 600.F / 2.F;
-float m_cameraFieldOfView = 45.F;
+double m_cameraSensitivity = .15F;
+double m_cameraYaw = -90.F;
+double m_cameraPitch = 0.F;
+double m_cameraPreviousX = 800.F / 2.F;
+double m_cameraPreviousY = 600.F / 2.F;
 
 Cube cube(nullptr);
 
@@ -80,8 +79,8 @@ void OnMouseMove(GLFWwindow* window, double xPos, double yPos) {
         m_mouseDidMove = true;
     }
 	
-	float xOffset = xPos - m_cameraPreviousX;
-    float yOffset = m_cameraPreviousY - yPos;
+	double xOffset = xPos - m_cameraPreviousX;
+    double yOffset = m_cameraPreviousY - yPos;
     m_cameraPreviousX = xPos;
     m_cameraPreviousY = yPos;
 

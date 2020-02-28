@@ -128,26 +128,26 @@ double easeInOutBack( double t, double b, double c, double d, double s ) {
 
 
 double easeInElastic( double t, double b, double c, double d ) {
-	auto s = 1.70158; auto p = 0; auto a = c;
+	double s = 1.70158; double p = 0; double a = c;
 	if (t == 0) return b;  if ((t /= d) == 1) return b + c;  if (!p) p = d * .3;
-	if (a < abs(c)) { a = c; auto s = p / 4; }
-	else auto s = p / (2 * PI) * asin(c / a);
+	if (a < abs(c)) { a = c; double s = p / 4; }
+	else double s = p / (2 * PI) * asin(c / a);
 	return -(a*pow(2, 10 * (t -= 1)) * sin((t*d - s)*(2 * PI) / p)) + b;
 }
 
 double easeOutElastic( double t, double b, double c, double d ) {
-	auto s = 1.70158; auto p = 0; auto a = c;
+	double s = 1.70158; double p = 0; double a = c;
 	if (t == 0) return b;  if ((t /= d) == 1) return b + c;  if (!p) p = d * .3;
-	if (a < abs(c)) { a = c; auto s = p / 4; }
-	else auto s = p / (2 * PI) * asin(c / a);
+	if (a < abs(c)) { a = c; double s = p / 4; }
+	else double s = p / (2 * PI) * asin(c / a);
 	return a * pow(2, -10 * t) * sin((t*d - s)*(2 * PI) / p) + c + b;
 }
 
 double easeInOutElastic( double t, double b, double c, double d ) {
-	auto s = 1.70158; auto p = 0; auto a = c;
+	double s = 1.70158; double p = 0; double a = c;
 	if (t == 0) return b;  if ((t /= d / 2) == 2) return b + c;  if (!p) p = d * (.3*1.5);
-	if (a < abs(c)) { a = c; auto s = p / 4; }
-	else auto s = p / (2 * PI) * asin(c / a);
+	if (a < abs(c)) { a = c; double s = p / 4; }
+	else double s = p / (2 * PI) * asin(c / a);
 	if (t < 1) return -.5*(a*pow(2, 10 * (t -= 1)) * sin((t*d - s)*(2 * PI) / p)) + b;
 	return a * pow(2, -10 * (t -= 1)) * sin((t*d - s)*(2 * PI) / p)*.5 + c + b;
 }
