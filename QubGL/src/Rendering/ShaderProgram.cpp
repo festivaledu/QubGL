@@ -20,6 +20,7 @@
 
 using namespace std;
 
+// Cube colors
 static glm::vec4 colors[] = {
     glm::vec4(0.F, .6F, .28F, 1.F), // Green
     glm::vec4(.725F, 0.F, 0.F, 1.F), // Red
@@ -124,6 +125,7 @@ string ShaderProgram::ParseFile(const string& shaderFilePath) {
 }
 
 void ShaderProgram::SetColorOverrides(Model& model) const {
+    // Define color override uniforms for each axis
     auto xOverrideId = glGetUniformLocation(m_programId, "XColorOverride");
     auto yOverrideId = glGetUniformLocation(m_programId, "YColorOverride");
     auto zOverrideId = glGetUniformLocation(m_programId, "ZColorOverride");
@@ -132,18 +134,22 @@ void ShaderProgram::SetColorOverrides(Model& model) const {
     glm::vec4 yOverride(0.F);
     glm::vec4 zOverride(0.F);
 
+    // Set x override if valid index is given
     if (model.Colors.x > -1) {
         xOverride = colors[(int)model.Colors.x];
     }
 
+    // Set y override if valid index is given
     if (model.Colors.y > -1) {
         yOverride = colors[(int)model.Colors.y];
     }
 
+    // Set z override if valid index is given
     if (model.Colors.z > -1) {
         zOverride = colors[(int)model.Colors.z];
     }
 
+    // Pass overrides to the shader
     glUniform4f(xOverrideId, xOverride.r, xOverride.g, xOverride.b, xOverride.a);
     glUniform4f(yOverrideId, yOverride.r, yOverride.g, yOverride.b, yOverride.a);
     glUniform4f(zOverrideId, zOverride.r, zOverride.g, zOverride.b, zOverride.a);

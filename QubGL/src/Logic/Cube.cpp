@@ -30,6 +30,7 @@ Cube::Cube(const ShaderProgram* shader)
 
 void Cube::Draw() {
 	if ((m_rotateSide != Side::None) && a != m_rotateAngle) {
+        // Approach target angle
 		a = easeOutCubic(iteration, m_animationStartAngle, m_rotateAngle, 30);
 		iteration++;
 	
@@ -42,16 +43,19 @@ void Cube::Draw() {
 			switch (m_rotateSide) {
 			case Side::Left:
 			case Side::Right:
+                // Rotate around x axis
 				tf.SetRotation(a, r.y, r.z);
 				m = glm::vec3(p->Position) * RotateX(glm::radians(a));
 				break;
 			case Side::Bottom:
 			case Side::Top:
+                // Rotate around y axis
 				tf.SetRotation(r.x, a, r.z);
 				m = glm::vec3(p->Position) * RotateY(glm::radians(a));
 				break;
 			case Side::Back:
 			case Side::Front:
+                // Rotate around z axis
 				tf.SetRotation(r.x, r.y, a);
 				m = glm::vec3(p->Position) * RotateZ(glm::radians(a));
 				break;
@@ -59,11 +63,13 @@ void Cube::Draw() {
 				a = 0.F;
 			}
 
+            // Adjust model position on rotation curve
 			tf.SetTranslation(m.x, m.y, m.z);
 		}
 
 		FinishRotate();
 	} else {
+        // Reset all cube positions after rotating
         for (auto p : m_pointers) {
             auto& tf = p->GetTransform();
             tf.SetTranslation(p->Position.x, p->Position.y, p->Position.z);
@@ -76,6 +82,7 @@ void Cube::Draw() {
 }
 
 void Cube::FinishRotate() {
+    // Rotation isn't completed
     if (a != m_rotateAngle) return;
 
     if (m_rotateSide != Side::None) {
@@ -84,6 +91,7 @@ void Cube::FinishRotate() {
         for (auto p : pointers) {
             float c = 0;
 
+            // Update the colors on each model to represent the current cube state
             switch (m_rotateSide) {
             case Side::Left:
             case Side::Right:
@@ -138,11 +146,13 @@ void Cube::FinishRotate() {
                 break;
             }
 
+            // Reset all rotations
             auto& tf = p->GetTransform();
             tf.SetRotation(0.F, 0.F, 0.F);
         }
     }
 
+    // End rotation
     m_isRotating = false;
     m_rotateSide = Side::None;
 
@@ -167,10 +177,6 @@ void Cube::GenerateModels(const Mesh mesh) {
                 transform.SetScale(.5F, .5F, .5F);
                 transform.SetTranslation(c, l, r);
 
-                if (l == 1 && c == -1 && r == 1) {
-                    transform.SetRotation(0.F, 0.F, 0.F);
-                }
-
                 m_models.push_back(model);
                 m_pointers.push_back(&m_models.back());
             }
@@ -181,6 +187,8 @@ void Cube::GenerateModels(const Mesh mesh) {
 }
 
 void Cube::GenerateSides() {
+    // Initialize default colors
+    // The vectors x, y and z values correspond to the color index of the color shown on each side facing said axis
     m_pointers[0]->Colors = glm::vec3(Color::White, Color::Orange, Color::Blue);
     m_pointers[1]->Colors = glm::vec3(Color::White, Color::Orange, -1);
     m_pointers[2]->Colors = glm::vec3(Color::White, Color::Orange, Color::Green);
@@ -224,6 +232,7 @@ bool Cube::GetIsRotating() const {
 std::vector<Model*> Cube::GetSide(Side side) {
     std::vector<Model*> s;
 
+    // Returns a side of a cube containing 9 individual cubes
     for (auto p : m_pointers) {
         switch (side) {
         case Side::Bottom:
@@ -276,6 +285,7 @@ void Cube::Rotate(Side side, Direction direction) {
         a = 0.F;
     }
 
+    // Blueprint the rotation
 	m_animationStartAngle = a;
     m_rotateAngle = a + (int)direction;
 
@@ -285,14 +295,17 @@ void Cube::Rotate(Side side, Direction direction) {
 }
 
 glm::mat3 Cube::RotateX(const float angle) {
+    // Returns the transformation matrix for an X rotation
     return glm::mat3(1, 0, 0, 0, cos(angle), -sin(angle), 0, sin(angle), cos(angle));
 }
 
 glm::mat3 Cube::RotateY(const float angle) {
+    // Returns the transformation matrix for an Y rotation
     return glm::mat3(cos(angle), 0, sin(angle), 0, 1, 0, -sin(angle), 0, cos(angle));
 }
 
 glm::mat3 Cube::RotateZ(const float angle) {
+    // Returns the transformation matrix for an Z rotation
     return glm::mat3(cos(angle), -sin(angle), 0, sin(angle), cos(angle), 0, 0, 0, 1);
 }
 

@@ -20,6 +20,8 @@ Model::~Model() { }
 
 void Model::Draw(const ShaderProgram& shader) {
     shader.Bind();
+
+    // Pass color overrides to the shader
     shader.SetColorOverrides(*this);
     shader.SetModelMatrix(*this);
     m_mesh.Draw();

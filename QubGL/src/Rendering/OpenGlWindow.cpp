@@ -20,9 +20,9 @@
 
 bool m_catchMouse = true;
 
-glm::vec3 m_cameraPosition   = glm::vec3(0.F, 0.F,  5.F);
+glm::vec3 m_cameraPosition = glm::vec3(0.F, 0.F,  5.F);
 glm::vec3 m_cameraFront = glm::vec3(0.F, 0.F, -1.F);
-glm::vec3 m_cameraUp    = glm::vec3(0.F, 1.F,  0.F);
+glm::vec3 m_cameraUp = glm::vec3(0.F, 1.F,  0.F);
 
 bool m_mouseDidMove = false;
 double m_cameraSensitivity = .15F;
@@ -36,8 +36,11 @@ Cube cube(nullptr);
 
 void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (key == GLFW_KEY_ESCAPE) glfwDestroyWindow(window);
+
+	// Prevent actions when the cube is still rotating
 	if (action != GLFW_PRESS || cube.GetIsRotating()) return;
 
+	// Change direction of rotation when Ctrl is pressed
     auto d = ((mods & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL) ? Direction::CounterClockwise : Direction::Clockwise;
 
 	switch (key) {
@@ -125,17 +128,11 @@ void OnMouseMove(GLFWwindow* window, double xPos, double yPos) {
     m_cameraFront = glm::normalize(front);
 }
 
-void OnMouseScroll(GLFWwindow* window, double xOffset, double yOffset) {
-	std::cout << yOffset << std::endl;
-	
+void OnMouseScroll(GLFWwindow* window, double xOffset, double yOffset) {	
 	m_cameraFieldOfView -= yOffset;
 	if (m_cameraFieldOfView < 0.1F) m_cameraFieldOfView = 0.1F;
 	if (m_cameraFieldOfView > 175.F) m_cameraFieldOfView = 175.F;
-
-	std::cout << m_cameraFieldOfView << std::endl;
 }
-
-
 
 OpenGlWindow::OpenGlWindow(const std::string& title, unsigned int width, unsigned int height)
     :m_title(title), m_width(width), m_height(height), m_window(nullptr) {
@@ -215,12 +212,16 @@ void OpenGlWindow::Show() {
     ShaderProgram program("resources/BasicVertex.shader", "resources/BasicFragment.shader");
     program.Bind();
 
+	// Initialize loader and load cube from obj
     Loader loader;
     auto loaded = loader.LoadObjects("resources/Cube2.obj");
 
+	// Get loaded mesh
     Mesh mesh = loader.Meshes.at(0);
     
     cube.SetShader(&program);
+
+	// Generate cube formation
     cube.GenerateModels(mesh);
 
     auto aspectRatio = 1920.F / 1080.F;
