@@ -18,6 +18,8 @@
 #include "Model.hpp"
 #include "ShaderProgram.hpp"
 
+bool m_catchMouse = true;
+
 glm::vec3 m_cameraPosition   = glm::vec3(0.F, 0.F,  5.F);
 glm::vec3 m_cameraFront = glm::vec3(0.F, 0.F, -1.F);
 glm::vec3 m_cameraUp    = glm::vec3(0.F, 1.F,  0.F);
@@ -74,27 +76,22 @@ void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	}
 }
 
-    // Only disabled for now. Whole cube rotation should be removed entirely tho because it breaks the 1st law of cube colorism
-
-	//switch (key) {
-	//// Cube section controls
-	//case GLFW_KEY_KP_7:
-	//	cube.Rotate(Side::Left, Direction::Clockwise);
-	//	break;
-	//case GLFW_KEY_KP_1:
-	//	cube.Rotate(Side::Left, Direction::CounterClockwise);
-	//	break;
-	//case GLFW_KEY_KP_9:
-	//	cube.Rotate(Side::Right, Direction::Clockwise);
-	//	break;
-	//case GLFW_KEY_KP_3:
-	//	cube.Rotate(Side::Right, Direction::CounterClockwise);
-	//	break;
-	//default: break;
-	//}
+void OnMouseKey(GLFWwindow* window, int button, int action, int mods) {
+	if (action != GLFW_PRESS) return;
+	
+	switch (button) {
+	case GLFW_MOUSE_BUTTON_MIDDLE:
+		m_catchMouse = !m_catchMouse;
+		glfwSetInputMode(window, GLFW_CURSOR, m_catchMouse ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+		glfwGetCursorPos(window, &m_cameraPreviousX, &m_cameraPreviousY);
+		break;
+	default: break;
+	}
 }
 
 void OnMouseMove(GLFWwindow* window, double xPos, double yPos) {
+	if (!m_catchMouse) return;
+
 	if (!m_mouseDidMove)
     {
         m_cameraPreviousX = xPos;
@@ -153,6 +150,7 @@ OpenGlWindow::OpenGlWindow(const std::string& title, unsigned int width, unsigne
 
     glfwSetKeyCallback(m_window, OnKey);
 	glfwSetCursorPosCallback(m_window, OnMouseMove);
+	glfwSetMouseButtonCallback(m_window, OnMouseKey);
 
     glClearColor(0.F, 0.F, 0.F, 1.F);
 }
