@@ -1,10 +1,17 @@
+//
+//  ShaderProgram.cpp
+//  QubGL
+//
+//  Copyright © 2020 Team FESTIVAL. All rights reserved.
+//
+
 #include "ShaderProgram.hpp"
 
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
 #include <iostream>
-#include <fstream> // -> ifstream
+#include <fstream>
 #include <sstream>
 #include <vector>
 

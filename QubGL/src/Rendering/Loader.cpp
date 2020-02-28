@@ -1,3 +1,10 @@
+//
+//  Loader.cpp
+//  QubGL
+//
+//  Copyright © 2020 Team FESTIVAL. All rights reserved.
+//
+
 #define _USE_MATH_DEFINES
 
 #include "Loader.hpp"

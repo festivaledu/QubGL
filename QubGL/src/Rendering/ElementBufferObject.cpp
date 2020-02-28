@@ -1,3 +1,10 @@
+//
+//  ElementBufferObject.cpp
+//  QubGL
+//
+//  Copyright © 2020 Team FESTIVAL. All rights reserved.
+//
+
 #include "ElementBufferObject.hpp"
 
 #include "GLEW/glew.h"

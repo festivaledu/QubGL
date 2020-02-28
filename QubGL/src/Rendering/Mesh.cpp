@@ -1,3 +1,10 @@
+//
+//  Mesh.cpp
+//  QubGL
+//
+//  Copyright © 2020 Team FESTIVAL. All rights reserved.
+//
+
 #include "Mesh.hpp"
 
 #include <iostream>

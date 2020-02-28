@@ -1,3 +1,10 @@
+//
+//  WindowFactory.cpp
+//  QubGL
+//
+//  Copyright © 2020 Team FESTIVAL. All rights reserved.
+//
+
 #include "WindowFactory.hpp"
 
 #include "OpenGlWindow.hpp"

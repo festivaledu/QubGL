@@ -1,3 +1,10 @@
+//
+//  Transform.cpp
+//  QubGL
+//
+//  Copyright © 2020 Team FESTIVAL. All rights reserved.
+//
+
 #include "Transform.hpp"
 
 Transform::Transform()

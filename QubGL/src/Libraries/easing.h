@@ -1,3 +1,10 @@
+//
+//  easing.h
+//  QubGL
+//
+//  Copyright © 2020 Team FESTIVAL. All rights reserved.
+//
+
 #pragma once 
 
 double easeInSine(double t, double b, double c, double d);

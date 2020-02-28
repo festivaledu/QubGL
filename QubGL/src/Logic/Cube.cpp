@@ -1,3 +1,10 @@
+//
+//  Cube.cpp
+//  QubGL
+//
+//  Copyright © 2020 Team FESTIVAL. All rights reserved.
+//
+
 #define _USE_MATH_DEFINES
 
 #include "Cube.hpp"
@@ -68,22 +75,13 @@ void Cube::Draw() {
     }
 }
 
-std::vector<std::string> sides = { "Keine", "Unten", "Links", "Hinten", "Vorne", "Rechts", "Oben" };
-std::vector<int> colors = { 42, 41, 44, 43, 47, 103 };
-
 void Cube::FinishRotate() {
     if (a != m_rotateAngle) return;
 
     if (m_rotateSide != Side::None) {
         auto pointers = GetSide(m_rotateSide);
 
-        //std::cout << std::endl << sides[(int)m_rotateSide] << " gedreht " << (m_rotateDirection == Direction::Clockwise ? "im" : "gegen den") << " Uhrzeigersinn" << std::endl;
-
         for (auto p : pointers) {
-            //std::cout << "\x1B[" + std::to_string(colors[c]) + "m   \033[0m";
-
-            //std::cout << std::endl << "(X: " << p->Position.x << " | Y: " << p->Position.y << " | Z: " << p->Position.z << " )" << std::endl;
-
             float c = 0;
 
             switch (m_rotateSide) {
@@ -140,8 +138,6 @@ void Cube::FinishRotate() {
                 break;
             }
 
-            //std::cout << "(X: " << p->Position.x << " | Y: " << p->Position.y << " | Z: " << p->Position.z << " )" << std::endl;
-
             auto& tf = p->GetTransform();
             tf.SetRotation(0.F, 0.F, 0.F);
         }
@@ -151,11 +147,6 @@ void Cube::FinishRotate() {
     m_rotateSide = Side::None;
 
 	iteration = 0;
-
-    /*for (auto p : pointers) {
-        auto& tf = p->GetTransform();
-        tf.SetRotation(0.F, 0.F, 0.F);
-    }*/
 }
 
 void Cube::GenerateModels(const Mesh mesh) {

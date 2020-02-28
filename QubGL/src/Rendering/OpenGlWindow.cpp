@@ -1,3 +1,10 @@
+//
+//  OpenGlWindow.cpp
+//  QubGL
+//
+//  Copyright © 2020 Team FESTIVAL. All rights reserved.
+//
+
 #include "OpenGlWindow.hpp"
 
 #include "GLEW/glew.h"
@@ -48,21 +55,6 @@ void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
     // Only disabled for now. Whole cube rotation should be removed entirely tho because it breaks the 1st law of cube colorism
 
 	//switch (key) {
-	///// Note: https://developer.valvesoftware.com/w/images/6/6c/Hammer_Axis_visual_guide.png
-	//// Cube controls
-	//case GLFW_KEY_KP_8:
-	//	cube.Rotate(Axis::Y, Direction::Clockwise);
-	//	break;
-	//case GLFW_KEY_KP_2:
-	//	cube.Rotate(Axis::Y, Direction::CounterClockwise);
-	//	break;
-	//case GLFW_KEY_KP_4:
-	//	cube.Rotate(Axis::Z, Direction::Clockwise);
-	//	break;
-	//case GLFW_KEY_KP_6:
-	//	cube.Rotate(Axis::Z, Direction::CounterClockwise);
-	//	break;
-
 	//// Cube section controls
 	//case GLFW_KEY_KP_7:
 	//	cube.Rotate(Side::Left, Direction::Clockwise);
@@ -208,7 +200,6 @@ void OpenGlWindow::Show() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		glm::mat4 camera = glm::lookAt(m_cameraPosition, m_cameraPosition + m_cameraFront, m_cameraUp);
-		// glm::mat4 camera = glm::lookAt(m_cameraPosition, m_cameraCenter, glm::vec3(0.F, 1.F, 0.F));
 		program.SetViewMatrix(camera);
 
         cube.Draw();

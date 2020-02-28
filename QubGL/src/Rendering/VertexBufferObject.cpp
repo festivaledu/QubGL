@@ -1,3 +1,10 @@
+//
+//  VertexBufferObject.cpp
+//  QubGL
+//
+//  Copyright © 2020 Team FESTIVAL. All rights reserved.
+//
+
 #include "VertexBufferObject.hpp"
 
 VertexBufferObject::VertexBufferObject() {

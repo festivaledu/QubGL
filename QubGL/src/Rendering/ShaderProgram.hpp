@@ -1,3 +1,10 @@
+//
+//  ShaderProgram.hpp
+//  QubGL
+//
+//  Copyright © 2020 Team FESTIVAL. All rights reserved.
+//
+
 #pragma once
 
 #include "GLM/gtc/matrix_transform.hpp"

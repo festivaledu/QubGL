@@ -34,7 +34,6 @@
     <ClInclude Include="src\Rendering\ElementBufferObject.hpp" />
     <ClInclude Include="src\Rendering\Lighting\DirectionalLight.hpp" />
     <ClInclude Include="src\Rendering\Lighting\Light.hpp" />
-    <ClInclude Include="src\Rendering\Lighting\PointLight.hpp" />
     <ClInclude Include="src\Rendering\Loader.hpp" />
     <ClInclude Include="src\Rendering\LoaderHelpers.hpp" />
     <ClInclude Include="src\Rendering\Material.hpp" />
