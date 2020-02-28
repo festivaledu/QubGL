@@ -191,7 +191,7 @@ void OpenGlWindow::ProcessInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) {
 		cameraSpeed = .1F;
 	} else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-		cameraSpeed = .5F;
+		cameraSpeed = .75F;
 	}
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
