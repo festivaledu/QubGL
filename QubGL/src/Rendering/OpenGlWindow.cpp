@@ -37,19 +37,42 @@ void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
     auto d = ((mods & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL) ? Direction::CounterClockwise : Direction::Clockwise;
 
-    if (key == GLFW_KEY_KP_DIVIDE || key == GLFW_KEY_KP_MULTIPLY || key == GLFW_KEY_7 || key == GLFW_KEY_8) {
-        cube.Rotate(Side::Back, d);
-    } else if (key == GLFW_KEY_KP_0 || key == GLFW_KEY_KP_DECIMAL || key == GLFW_KEY_N || key == GLFW_KEY_M) {
-        cube.Rotate(Side::Front, d);
-    } else if (key == GLFW_KEY_KP_4 || key == GLFW_KEY_H) {
-        cube.Rotate(Side::Left, d);
-    } else if (key == GLFW_KEY_KP_6 || key == GLFW_KEY_K) {
-        cube.Rotate(Side::Right, d);
-    } else if (key == GLFW_KEY_KP_8 || key == GLFW_KEY_U) {
-        cube.Rotate(Side::Top, d);
-    } else if (key == GLFW_KEY_KP_2 || key == GLFW_KEY_J) {
-        cube.Rotate(Side::Bottom, d);
-    }
+	switch (key) {
+	case GLFW_KEY_KP_0:
+	case GLFW_KEY_N:
+		cube.Rotate(Side::Front, Direction::CounterClockwise);
+		break;
+	case GLFW_KEY_KP_DECIMAL:
+	case GLFW_KEY_M:
+		cube.Rotate(Side::Front, Direction::Clockwise);
+		break;
+	case GLFW_KEY_KP_DIVIDE:
+	case GLFW_KEY_7:
+		cube.Rotate(Side::Back, Direction::CounterClockwise);
+		break;
+	case GLFW_KEY_KP_MULTIPLY:
+	case GLFW_KEY_8:
+		cube.Rotate(Side::Back, Direction::Clockwise);
+		break;
+	case GLFW_KEY_KP_8:
+	case GLFW_KEY_U:
+		cube.Rotate(Side::Top, d);
+		break;
+	case GLFW_KEY_KP_2:
+	case GLFW_KEY_J:
+		cube.Rotate(Side::Bottom, d);
+		break;
+	case GLFW_KEY_KP_4:
+	case GLFW_KEY_H:
+		cube.Rotate(Side::Left, d);
+		break;
+	case GLFW_KEY_KP_6:
+	case GLFW_KEY_K:
+		cube.Rotate(Side::Right, d);
+		break;
+	default: break;
+	}
+}
 
     // Only disabled for now. Whole cube rotation should be removed entirely tho because it breaks the 1st law of cube colorism
 
