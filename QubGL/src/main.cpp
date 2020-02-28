@@ -5,7 +5,7 @@
 #include "Rendering/WindowFactory.hpp"
 
 int main(void) {
-    Window* window = WindowFactory::CreateWindow("QubGL - Jonas tinkt", 1920, 1080);
+    Window* window = WindowFactory::CreateWindow("QubGL", 1920, 1080);
     window->Show();
 
     delete window;
