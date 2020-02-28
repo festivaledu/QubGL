@@ -35,7 +35,7 @@ void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (key == GLFW_KEY_ESCAPE) glfwDestroyWindow(window);
 	if (action != GLFW_PRESS || cube.GetIsRotating()) return;
 
-    auto d = ((mods && GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT) ? Direction::CounterClockwise : Direction::Clockwise;
+    auto d = ((mods & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL) ? Direction::CounterClockwise : Direction::Clockwise;
 
     if (key == GLFW_KEY_KP_DIVIDE || key == GLFW_KEY_KP_MULTIPLY || key == GLFW_KEY_7 || key == GLFW_KEY_8) {
         cube.Rotate(Side::Back, d);
